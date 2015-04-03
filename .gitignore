@@ -6,4 +6,4 @@
 */local.properties
 */.settings/
 *.versionsBackup
-
+*.iml
