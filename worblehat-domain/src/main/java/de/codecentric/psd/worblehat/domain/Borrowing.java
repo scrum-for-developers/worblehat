@@ -49,4 +49,7 @@ public class Borrowing implements Serializable {
 		// for JPA
 	}
 
+	public DateTime getBorrowDate() {
+		return new DateTime(borrowDate);
+	}
 }

@@ -1,6 +1,7 @@
 package de.codecentric.psd.worblehat.domain;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +76,24 @@ public class StandardBookService implements BookService {
     public void deleteAllBooks() {
         borrowingRepository.deleteAll();
         bookRepository.deleteAll();
+    }
+
+    @Override
+    public int calculateFeeForBorrower(String borrowerEmail) {
+        List<Borrowing> borrowings = borrowingRepository.findBorrowingsByBorrower(borrowerEmail);
+        int fee = 0;
+        for (Borrowing borrowing : borrowings){
+            int days = Days.daysBetween(borrowing.getBorrowDate(), DateTime.now()).getDays();
+            if (days > 28 && days <=35){
+                fee = 1;
+            } else if (days > 35 && days <= 42){
+                fee = 2;
+            } else if (days > 42){
+                int additionalWeeks = ((days - 1) / 7) - 5;
+                fee = 2 + (additionalWeeks * 3);
+            }
+        }
+        return fee;
     }
 
 

@@ -20,4 +20,6 @@ public interface BookService {
 	boolean bookExists(String isbn);
 
 	void deleteAllBooks();
+
+	int calculateFeeForBorrower(String borrowerEmail);
 }

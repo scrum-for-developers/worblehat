@@ -105,4 +105,89 @@ public class BookServiceTest {
 		verify(bookRepository).deleteAll();
 		verify(borrowingRepository).deleteAll();
 	}
+
+	@Test
+	public void shouldCalculateFeeForBorrower() throws Exception {
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(0));
+	}
+
+	@Test
+	public void whenBookWasRented28DaysAgoFeeShouldBeZero() throws Exception {
+		DateTime twentyEightDaysAgo = DateTime.now().minusDays(28);
+		createBorrowingsWithDate(twentyEightDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(0));
+	}
+
+	@Test
+	public void whenBookWasRented29DaysAgoFeeShouldBeOne() throws Exception {
+		DateTime twentyNineDaysAgo = DateTime.now().minusDays(29);
+		createBorrowingsWithDate(twentyNineDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(1));
+	}
+
+	@Test
+	public void whenBookWasRented35DaysAgoFeeShouldBeOne() throws Exception {
+		DateTime thirtyFiveDaysAgo = DateTime.now().minusDays(35);
+		createBorrowingsWithDate(thirtyFiveDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(1));
+	}
+
+	@Test
+	public void whenBookWasRented36DaysAgoFeeShouldBeTwo() throws Exception {
+		DateTime thirtySixDaysAgo = DateTime.now().minusDays(36);
+		createBorrowingsWithDate(thirtySixDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(2));
+	}
+
+	@Test
+	public void whenBookWasRented42DaysAgoFeeShouldBeTwo() throws Exception {
+		DateTime fortyTwoDaysAgo = DateTime.now().minusDays(42);
+		createBorrowingsWithDate(fortyTwoDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(2));
+	}
+
+	@Test
+	public void whenBookWasRented43DaysAgoFeeShouldBeFive() throws Exception {
+		DateTime fortyThreeDaysAgo = DateTime.now().minusDays(43);
+		createBorrowingsWithDate(fortyThreeDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(5));
+	}
+
+	@Test
+	public void whenBookWasRented49DaysAgoFeeShouldBeFive() throws Exception {
+		DateTime fortyNineDaysAgo = DateTime.now().minusDays(49);
+		createBorrowingsWithDate(fortyNineDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(5));
+	}
+
+	@Test
+	public void whenBookWasRented50DaysAgoFeeShouldBeEight() throws Exception {
+		DateTime fiftyDaysAgo = DateTime.now().minusDays(50);
+		createBorrowingsWithDate(fiftyDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(8));
+	}
+
+	@Test
+	public void whenBookWasRented57DaysAgoFeeShouldBeEleven() throws Exception {
+		DateTime fiftySevenDaysAgo = DateTime.now().minusDays(57);
+		createBorrowingsWithDate(fiftySevenDaysAgo);
+		int fee = bookService.calculateFeeForBorrower(BORROWER_EMAIL);
+		assertThat(fee, is(11));
+	}
+
+	private void createBorrowingsWithDate(DateTime twentyEightDaysAgo) {
+		final Borrowing borrowing = new Borrowing(TEST_BOOK, BORROWER_EMAIL, twentyEightDaysAgo);
+		List<Borrowing> borrowings = new ArrayList<>();
+		borrowings.add(borrowing);
+		when(borrowingRepository.findBorrowingsByBorrower(BORROWER_EMAIL)).thenReturn(borrowings);
+	}
 }
