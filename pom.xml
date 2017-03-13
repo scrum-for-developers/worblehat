@@ -78,7 +78,7 @@
       <dependency>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
-        <version>3.5.3</version>
+        <version>3.3.2</version>
       </dependency>
       <dependency>
         <groupId>javax.validation</groupId>
@@ -119,7 +119,7 @@
         <plugin>
           <groupId>org.liquibase</groupId>
           <artifactId>liquibase-maven-plugin</artifactId>
-          <version>3.5.3</version>
+          <version>3.3.2</version>
           <configuration>
             <logging>info</logging>
             <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
