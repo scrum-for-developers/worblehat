@@ -16,6 +16,6 @@ And I get an error message <message> when the borrower <borrower> tries to borro
 
 Examples:
 
-| isbn       | borrower      | message                       |
-| 0552131075 | user@test.com | An internal error occurred    |
+| isbn       | borrower      | message                        |
+| 0552131075 | user@test.com | An internal error occurred.    |
 
