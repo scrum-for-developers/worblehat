@@ -69,9 +69,13 @@ public class StandardBookService implements BookService {
 
     Optional<Book> bookFromRepo = bookRepository.findTopByIsbn(isbn);
 
-    if (!bookFromRepo.isPresent() || book.isSameCopy(bookFromRepo.get())) {
-      return Optional.of(bookRepository.save(book));
-    } else return Optional.empty();
+        Book newBook = bookFromRepo.orElseGet(() -> bookRepository.save(book));
+
+        Optional<Book> exisitingBookDifferentEdition = bookFromRepo
+                .filter(b -> b.isSameCopy(book))
+                .map(b -> bookRepository.save(b));
+
+        return Optional.of(exisitingBookDifferentEdition).orElse(Optional.of(newBook));
   }
 
   @Override
