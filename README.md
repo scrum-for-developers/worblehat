@@ -38,7 +38,7 @@ docker run --detach \
    maven repository
    
    ```
-   root> mvn clean instal 
+   root> mvn clean install
    ```
    
 1. Then, we need the application running, that should be tested
