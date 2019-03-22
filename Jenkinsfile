@@ -13,6 +13,18 @@ pipeline {
       agent any
       steps {
         sh 'mvn -B clean install -DskipTests'
+        rtUpload (
+          serverId: "1213362221@1425654692567",
+          spec:
+            """{
+              "files": [
+                {
+                  "pattern": "worblehat-web/**/*.jar",
+                  "target": "example-repo-local/"
+                }
+              ]
+            }"""
+          )
       }
     }
 
