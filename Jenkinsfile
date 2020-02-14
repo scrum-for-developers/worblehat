@@ -8,9 +8,16 @@ pipeline {
     SITE_DEPLOY_PATH = '/scrumfordevelopers/nginx_root/worblehat-site'
   }
 
+  options {
+    disableConcurrentBuilds()
+  }
+
   stages {
     stage('BUILD') {
       agent any
+      when {
+        branch 'master'
+      }
       steps {
         sh 'mvn -B clean install -DskipTests'
         rtUpload (
@@ -30,6 +37,9 @@ pipeline {
 
     stage('UNIT TEST') {
       agent any
+      when {
+        branch 'master'
+      }
       steps {
         sh 'mvn -B verify -Pcoverage'
       }
