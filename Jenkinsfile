@@ -8,10 +8,6 @@ pipeline {
     SITE_DEPLOY_PATH = '/scrumfordevelopers/nginx_root/worblehat-site'
   }
 
-  options {
-    disableConcurrentBuilds()
-  }
-
   stages {
     stage('BUILD') {
       agent any
