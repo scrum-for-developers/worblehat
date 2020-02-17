@@ -11,3 +11,4 @@ local.properties
 *.db
 logs
 .DS_Store
+.mvn/wrapper/maven-wrapper.jar
