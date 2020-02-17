@@ -1,18 +1,18 @@
 package de.codecentric.psd.worblehat.domain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BookTest {
 
     Book BOOK;
 
-    @Before
+    @BeforeEach
     public void setup() {
         BOOK = new Book("Titel", "Author", "2", "1", 1234);
     }

@@ -3,15 +3,14 @@ package de.codecentric.psd.worblehat.domain;
 import java.util.*;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,7 +31,7 @@ public class StandardBookServiceTest {
 	private Book aBorrowedBook, aCopyofBorrowedBook, anotherBorrowedBook;
 	private Borrowing aBorrowing, aBorrowingOfCopy, anotherBorrowing;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		aBook = new Book("title", "author", "edition", "isbn", 2016);
 		aCopyofBook = new Book("title", "author", "edition", "isbn", 2016);
