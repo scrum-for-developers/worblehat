@@ -1,8 +1,5 @@
 pipeline {
   agent none
-  triggers {
-    pollSCM '* 7-19 * * 1-5'
-  }
   environment {
     SONAR_URL = 'http://localhost:9000/sonar'
     SITE_DEPLOY_PATH = '/scrumfordevelopers/nginx_root/worblehat-site'
