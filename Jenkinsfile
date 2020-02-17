@@ -15,7 +15,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'mvn -B clean install -DskipTests'
+        sh './mvnw -B clean install -DskipTests'
         rtUpload (
           serverId: "1213362221@1425654692567",
           spec:
@@ -37,7 +37,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'mvn -B verify -Pcoverage'
+        sh './mvnw -B verify -Pcoverage'
       }
       post {
         always {
@@ -52,7 +52,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'mvn -B sonar:sonar -Pjenkins'
+        sh './mvnw -B sonar:sonar -Pjenkins'
       }
     }
 
@@ -62,7 +62,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        sh 'mvn -B site:site site:stage'
+        sh './mvnw -B site:site site:stage'
         sh 'cp -r target/staging/. ${SITE_DEPLOY_PATH}/site'
       }
     }
@@ -75,7 +75,7 @@ pipeline {
       steps {
         lock(resource: "DEV_ENV", label: null) {
           sh "sudo /etc/init.d/worblehat-test stop"
-          sh "mvn -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
+          sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
@@ -93,7 +93,7 @@ pipeline {
       }
       steps {
         lock(resource: "DEV_ENV", label: null) {
-          sh 'mvn -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://localhost/worblehat-test'
+          sh './mvnw -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://localhost/worblehat-test'
           publishHTML(
                   [allowMissing         : false,
                    alwaysLinkToLastBuild: false,
@@ -128,7 +128,7 @@ pipeline {
       steps {
         lock(resource: "PROD_ENV", label: null) {
           sh "sudo /etc/init.d/worblehat-prod stop"
-          sh "mvn -B -f worblehat-domain/pom.xml liquibase:update " +
+          sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update " +
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_prod " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
