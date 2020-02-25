@@ -13,18 +13,18 @@ pipeline {
       }
       steps {
         sh './mvnw -B clean install -DskipTests'
-        rtUpload (
-          serverId: "1213362221@1425654692567",
-          spec:
-            """{
-              "files": [
-                {
-                  "pattern": "worblehat-web/**/*.jar",
-                  "target": "example-repo-local/"
-                }
-              ]
-            }"""
-          )
+//        rtUpload (
+//          serverId: "12133k62221@1425654692567",
+//          spec:
+//            """{
+//              "files": [
+//                {
+//                  "pattern": "worblehat-web/**/*.jar",
+//                  "target": "example-repo-local/"
+//                }
+//              ]
+//            }"""
+//          )
       }
     }
 
