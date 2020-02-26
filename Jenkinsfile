@@ -102,6 +102,15 @@ pipeline {
           )
         }
       }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+        }
+    }
+
+
+
     }
 
     stage('PROD APPROVAL') {
