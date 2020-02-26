@@ -20,10 +20,23 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
+import org.junit.Before;
+
+import org.junit.ClassRule;
+
+import org.openqa.selenium.chrome.ChromeOptions;
+import java.io.File;
+import java.io.IOException;
+
+import de.codecentric.worblehat.acceptancetests.adapter.SeleniumAdapter;
 
 /**
  * <p>
@@ -40,14 +53,36 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 @TestPropertySource
 @EnableJpaRepositories("de.codecentric.psd.worblehat.domain")
 @EntityScan("de.codecentric.psd.worblehat.domain")
-@ComponentScan(
-		basePackages = {
-				"de.codecentric.worblehat.acceptancetests",
-				"de.codecentric.psd.worblehat.domain"})
+@ComponentScan(basePackages = { "de.codecentric.worblehat.acceptancetests", "de.codecentric.psd.worblehat.domain" })
 public class AllAcceptanceTestStories extends JUnitStories {
 
 	@Autowired
 	private ApplicationContext applicationContext;
+
+	@Autowired
+	private SeleniumAdapter seleniumAdapter;
+
+	static {
+		Testcontainers.exposeHostPorts(8080);
+	}
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AllAcceptanceTestStories.class);
+
+	@ClassRule
+	@SuppressWarnings("rawtypes")
+	public static BrowserWebDriverContainer chromeContainer = new BrowserWebDriverContainer<>()
+			.withCapabilities(new ChromeOptions()).withRecordingMode(RECORD_ALL, new File("./target/"));;
+
+	@Before
+	public void setup() {
+		seleniumAdapter.setDriver(chromeContainer.getWebDriver());
+		LOGGER.info("Connect to VNC via " + chromeContainer.getVncAddress());
+		try {
+			Runtime.getRuntime().exec("open " + chromeContainer.getVncAddress());
+		} catch (IOException e) {
+			// silently fail, if it's not working – e.printStackTrace();
+		}
+	}
 
 	@Override
 	public Configuration configuration() {
@@ -55,10 +90,8 @@ public class AllAcceptanceTestStories extends JUnitStories {
 		if (!hasConfiguration()) {
 
 			// prepare ReportBuilder
-			StoryReporterBuilder reporterBuilder = new StoryReporterBuilder()
-					.withFailureTrace(true)
-					.withFailureTraceCompression(true)
-					.withFormats(Format.CONSOLE, Format.HTML, Format.STATS);
+			StoryReporterBuilder reporterBuilder = new StoryReporterBuilder().withFailureTrace(true)
+					.withFailureTraceCompression(true).withFormats(Format.CONSOLE, Format.HTML, Format.STATS);
 
 			// necessary to match steps correctly that only differ after the last parameter
 			// see http://jbehave.org/reference/stable/prioritising-steps.html
@@ -67,10 +100,8 @@ public class AllAcceptanceTestStories extends JUnitStories {
 			StepCollector usefulStepCollector = new MarkUnmatchedStepsAsPending(stepFinder);
 
 			// general JBehave configuration
-			Configuration configuration = new MostUsefulConfiguration()
-					.useStepCollector(usefulStepCollector)
-					.useStoryControls(
-							new StoryControls().doResetStateBeforeScenario(false))
+			Configuration configuration = new MostUsefulConfiguration().useStepCollector(usefulStepCollector)
+					.useStoryControls(new StoryControls().doResetStateBeforeScenario(false))
 					.useStoryReporterBuilder(reporterBuilder);
 
 			useConfiguration(configuration);
@@ -81,15 +112,13 @@ public class AllAcceptanceTestStories extends JUnitStories {
 	}
 
 	@Override
-	public InjectableStepsFactory stepsFactory(){
+	public InjectableStepsFactory stepsFactory() {
 		return new SpringStepsFactory(configuration(), applicationContext);
 	}
 
 	@Override
 	protected List<String> storyPaths() {
-		return new StoryFinder().findPaths(
-				codeLocationFromClass(this.getClass()), "**/*.story",
-				"");
+		return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
 	}
 
 }

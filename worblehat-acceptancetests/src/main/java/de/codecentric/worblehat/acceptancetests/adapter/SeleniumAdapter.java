@@ -5,7 +5,6 @@ import de.codecentric.worblehat.acceptancetests.adapter.wrapper.Page;
 import de.codecentric.worblehat.acceptancetests.adapter.wrapper.PageElement;
 import org.apache.commons.io.FileUtils;
 import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.ScenarioType;
 import org.joda.time.LocalDateTime;
@@ -31,24 +30,15 @@ public class SeleniumAdapter {
 
     private String folderName;
 
-    @BeforeStories
-    public void initSelenium() throws Exception {
-        String seleniumProvider = Config.getEnvironment();
-        try {
-			if ("local".equalsIgnoreCase(seleniumProvider)) {
-                driver = DriverEnum.CHROME.getDriver();
-            } else {
-                driver = DriverEnum.PHANTOMJS.getDriver();
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error initializing Webdriver", e);
-            throw e;
-        }
+    public void setDriver(WebDriver driver) {
+        this.driver = driver;
+    }
 
+    @BeforeStories
+    public void initSelenium() {
         folderName = LocalDateTime.now().toString("yyyy-MM-dd HH:mm").concat(File.separator);
         folderName = "target" + File.separator + "screenshots" + File.separator + folderName;
         new File(folderName).mkdirs();
-
     }
 
     public void gotoPage(Page page) {
@@ -81,12 +71,6 @@ public class SeleniumAdapter {
         return strings;
     }
 
-    @AfterStories
-    public void afterStories() {
-        // Close the browser
-        driver.quit();
-    }
-
     @AfterScenario(uponType = ScenarioType.EXAMPLE)
     public void afterAnyScenario() {
         driver.manage().deleteAllCookies();
@@ -103,7 +87,7 @@ public class SeleniumAdapter {
             File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             FileUtils.copyFile(scrFile, new File(folderName.concat(filename).concat(".png")));
         } catch (IOException e) {
-			LOGGER.error("Could not take screenshot!", e);
+            LOGGER.error("Could not take screenshot!", e);
         }
 
     }

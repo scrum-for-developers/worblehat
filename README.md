@@ -26,9 +26,9 @@ docker run --detach \
   --publish 3306:3306 \
   mysql:5.6.25
 ```
-3. Run the application. In the directory `worblehat-web`:
-  * Either run `mvn spring-boot:run`
-  * Or start as plain Java main class: `de.codecentric.Application`
+3. Run the application.:
+  * Either run `./mvnw -pl worblehat-web spring-boot:run`
+  * Or start as plain Java main class in worblehat-web: `de.codecentric.Application`
 4. Access the application at <http://localhost:8080/worblehat/>
 
 ## Running acceptance tests
@@ -38,23 +38,21 @@ docker run --detach \
    maven repository
    
    ```
-   root> mvn clean install
+   root> ./mvnw clean install
    ```
    
 1. Then, we need the application running, that should be tested
 
    ```
-   root> mvn -f worblehat-web spring-boot:run
+   root> ./mvnw -pl worblehat-web spring-boot:run
    ```
 
 1. Run acceptance tests. It currently requires Chrome to be installed.
 
    ```
-   root> cd worblehat-acceptancetests
-   worblehat-acceptancetests> mvn clean verify
+   root>  ./mvnw -Pinclude-acceptancetests verify
    ```
- 
-   To run the tests headless, use the headless profile ```> mvn -Pheadless clean verify```
+
 1. The report can be found in ```target/jbehave/view/reports.html```
 
 ## Howto Release
