@@ -90,7 +90,7 @@ pipeline {
       }
       steps {
         lock(resource: "DEV_ENV", label: null) {
-          sh './mvnw -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://localhost/worblehat-test'
+          sh './mvnw -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://host.testcontainers.internal/worblehat-test'
           publishHTML(
                   [allowMissing         : false,
                    alwaysLinkToLastBuild: false,

@@ -63,7 +63,7 @@ public class AllAcceptanceTestStories extends JUnitStories {
 	private SeleniumAdapter seleniumAdapter;
 
 	static {
-		Testcontainers.exposeHostPorts(8080);
+		Testcontainers.exposeHostPorts(80,8080,9100,9101);
 	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AllAcceptanceTestStories.class);
