@@ -6,25 +6,33 @@ pipeline {
   }
 
   stages {
+
     stage('BUILD') {
       agent any
       when {
         branch 'master'
       }
       steps {
-        sh './mvnw -B clean install -DskipTests'
-//        rtUpload (
-//          serverId: "12133k62221@1425654692567",
-//          spec:
-//            """{
-//              "files": [
-//                {
-//                  "pattern": "worblehat-web/**/*.jar",
-//                  "target": "example-repo-local/"
-//                }
-//              ]
-//            }"""
-//          )
+        rtMavenResolver (
+            id: 'local-artifactory-resolver',
+            serverId: 'artifactory',
+            releaseRepo: 'libs-release',
+            snapshotRepo: 'libs-snapshot'
+        )  
+        rtMavenDeployer (
+            id: 'local-artifactory-deployer',
+            serverId: 'artifactory',
+            releaseRepo: 'libs-release-local',
+            snapshotRepo: 'libs-snapshot-local'
+        )
+        rtMavenRun (
+            tool: 'apache-maven-3.3.3',
+            pom: 'pom.xml',
+            goals: 'clean install',
+            opts: '-Xms1024m -Xmx4096m -DskipTests',
+            resolverId: 'local-artifactory-resolver',
+            deployerId: 'local-artifactory-deployer',
+        )
       }
     }
 
