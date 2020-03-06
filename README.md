@@ -6,26 +6,14 @@ Worblehat is a training application for the [Scrum for Developers](https://githu
 held by [codecentric AG](https://www.codecentric.de/).
 
 ## Requirements
-* JDK 7+
+* JDK 11+
 * Apache Maven (https://maven.apache.org)
-* Docker (for running acceptance tests, https://www.docker.com)
+* Docker
 
 ## Running the application
 
-1. Build the project: For example by running `mvn clean install` in the root directory
-1. Start the database. The easiest way is to fire up a docker container:
-```
-#!/bin/bash
-
-docker run --detach \
-  --name worblehat-db \
-  --env MYSQL_ROOT_PASSWORD=root \
-  --env MYSQL_USER=worblehat \
-  --env MYSQL_PASSWORD=worblehat \
-  --env MYSQL_DATABASE=worblehat_test \
-  --publish 3306:3306 \
-  mysql:5.6.25
-```
+1. Build the project: For example by running `./mvnw install` in the root directory
+1. Start the database. The easiest way is to fire up a docker container with  `worblehat-web/docker-db.sh`.
 3. Run the application.:
   * Either run `./mvnw -pl worblehat-web spring-boot:run`
   * Or start as plain Java main class in worblehat-web: `de.codecentric.Application`
@@ -38,7 +26,7 @@ docker run --detach \
    maven repository
    
    ```
-   root> ./mvnw clean install
+   root> ./mvnw install
    ```
    
 1. Then, we need the application running, that should be tested
