@@ -10,7 +10,7 @@ pipeline {
     stage('BUILD') {
       agent any
       when {
-        branch 'master'
+//        branch 'master'
       }
       steps {
         rtMavenResolver (
@@ -39,7 +39,7 @@ pipeline {
     stage('UNIT TEST') {
       agent any
       when {
-        branch 'master'
+//        branch 'master'
       }
       steps {
         sh './mvnw -B verify -Pcoverage'
@@ -54,7 +54,7 @@ pipeline {
     stage('QUALITY') {
       agent any
       when {
-        branch 'master'
+//        branch 'master'
       }
       steps {
         sh './mvnw -B sonar:sonar -Pjenkins'
@@ -94,7 +94,7 @@ pipeline {
     stage('ACCEPTANCE TEST') {
       agent any
       when {
-        branch 'master'
+//        branch 'master'
       }
       steps {
         lock(resource: "DEV_ENV", label: null) {
