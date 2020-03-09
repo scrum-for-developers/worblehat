@@ -18,6 +18,7 @@
     <modules>
         <module>worblehat-domain</module>
         <module>worblehat-web</module>
+        <module>worblehat-acceptancetests</module>
     </modules>
 
     <distributionManagement>
@@ -169,17 +170,6 @@
         </plugins>
     </reporting>
     <profiles>
-        <profile>
-            <id>include-acceptancetests</id>
-            <activation>
-                <property>
-                    <name>include-acceptancetests</name>
-                </property>
-            </activation>
-            <modules>
-                <module>worblehat-acceptancetests</module>
-            </modules>
-        </profile>
         <profile>
             <id>jenkins</id>
             <properties>
