@@ -98,13 +98,13 @@ pipeline {
       }
       steps {
         lock(resource: "DEV_ENV", label: null) {
-          sh './mvnw -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://host.testcontainers.internal/worblehat-test'
+          sh './mvnw -B -pl worblehat-acceptancetests verify'
           publishHTML(
                   [allowMissing         : false,
                    alwaysLinkToLastBuild: false,
                    keepAll              : false,
-                   reportDir            : 'worblehat-acceptancetests/target/jbehave/view',
-                   reportFiles          : 'reports.html',
+                   reportDir            : 'worblehat-acceptancetests/target/cucumber',
+                   reportFiles          : 'index.html',
                    reportName           : 'Worblehat Acceptance Test Report',
                    reportTitles         : 'Worblehat Acceptance Test Report']
           )
