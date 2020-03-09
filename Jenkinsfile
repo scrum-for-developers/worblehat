@@ -9,9 +9,9 @@ pipeline {
 
     stage('BUILD') {
       agent any
-      when {
+//      when {
 //        branch 'master'
-      }
+//      }
       steps {
         rtMavenResolver (
             id: 'local-artifactory-resolver',
@@ -38,9 +38,9 @@ pipeline {
 
     stage('UNIT TEST') {
       agent any
-      when {
+//      when {
 //        branch 'master'
-      }
+//      }
       steps {
         sh './mvnw -B verify -Pcoverage'
       }
@@ -53,9 +53,9 @@ pipeline {
 
     stage('QUALITY') {
       agent any
-      when {
+//      when {
 //        branch 'master'
-      }
+//      }
       steps {
         sh './mvnw -B sonar:sonar -Pjenkins'
       }
@@ -93,9 +93,9 @@ pipeline {
 
     stage('ACCEPTANCE TEST') {
       agent any
-      when {
+//      when {
 //        branch 'master'
-      }
+//      }
       steps {
         lock(resource: "DEV_ENV", label: null) {
           sh './mvnw -B -pl worblehat-acceptancetests verify'
