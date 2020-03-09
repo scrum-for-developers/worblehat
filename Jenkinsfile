@@ -85,7 +85,7 @@ pipeline {
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
 
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*.jar /opt/worblehat-test/worblehat.jar"
+          sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-test start"
         }
       }
@@ -146,7 +146,7 @@ pipeline {
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_prod " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*.jar /opt/worblehat-prod/worblehat.jar"
+          sh "cp ${env.WORKSPACE}/worblehat-web/target/-executable.jar /opt/worblehat-prod/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-prod start"
         }
       }
