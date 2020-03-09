@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import de.codecentric.psd.worblehat.domain.BookService;
 import de.codecentric.psd.worblehat.web.formdata.ReturnAllBooksFormData;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
@@ -28,7 +28,7 @@ public class ReturnAllBooksControllerTest {
 
     private BindingResult bindingResult;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         bookService = mock(BookService.class);
         returnAllBooksController = new ReturnAllBooksController(bookService);

@@ -6,8 +6,8 @@ import java.util.Optional;
 import de.codecentric.psd.worblehat.domain.Book;
 import de.codecentric.psd.worblehat.domain.BookService;
 import de.codecentric.psd.worblehat.web.formdata.BookDataFormData;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
@@ -35,7 +35,7 @@ public class InsertBookControllerTest {
 
     private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         bookService = mock(BookService.class);
         insertBookController = new InsertBookController(bookService);
