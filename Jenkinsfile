@@ -109,6 +109,11 @@ pipeline {
                    reportTitles         : 'Worblehat Acceptance Test Report']
           )
         }
+          post {
+            always {
+              junit '**/target/cucumber.xml'
+            }
+          }
       }
 
     post {
