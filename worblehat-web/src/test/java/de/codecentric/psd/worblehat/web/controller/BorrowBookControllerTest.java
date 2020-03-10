@@ -1,33 +1,27 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
-
 import de.codecentric.psd.worblehat.domain.Book;
-import de.codecentric.psd.worblehat.domain.BookAlreadyBorrowedException;
 import de.codecentric.psd.worblehat.domain.BookService;
 import de.codecentric.psd.worblehat.domain.Borrowing;
 import de.codecentric.psd.worblehat.web.formdata.BookBorrowFormData;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class BorrowBookControllerTest {
 
@@ -43,7 +37,7 @@ public class BorrowBookControllerTest {
 
     public static final String BORROWER_EMAIL = "someone@codecentric.de";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         bookService = mock(BookService.class);
         bindingResult = new MapBindingResult(new HashMap<>(), "");
