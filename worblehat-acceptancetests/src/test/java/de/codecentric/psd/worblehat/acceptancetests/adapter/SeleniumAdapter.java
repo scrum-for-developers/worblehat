@@ -5,9 +5,13 @@ import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.PageElement;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.Given;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDateTime;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.ExternalResource;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
@@ -15,18 +19,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+import org.testcontainers.lifecycle.TestDescription;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL;
 
 /**
  * Itegrates Selenium into the tests.
  */
-//@Component("SeleniumAdapter")
 public class SeleniumAdapter {
 
     @LocalServerPort
@@ -42,23 +47,43 @@ public class SeleniumAdapter {
         this.driver = driver;
     }
 
-    @ClassRule
+//    @ClassRule - not supported by Cucumber at this point
     @SuppressWarnings("rawtypes")
     public static BrowserWebDriverContainer chromeContainer = new BrowserWebDriverContainer<>()
             .withCapabilities(new ChromeOptions()).withRecordingMode(RECORD_ALL, new File("./target/"));
+    
+    // a class that extends thread that is to be called when program is exiting
+    static final Thread afterAllThread = new Thread() {
+
+        public void run() {
+            chromeContainer.afterTest(new TestDescription() {
+                @Override
+                public String getTestId() {
+                    return "ID";
+                }
+
+                @Override
+                public String getFilesystemFriendlyName() {
+                    return "Worblehat-AcceptanceTests";
+                }
+            }, Optional.empty());
+        }
+    };
 
     @Before
     public void setup() {
-        System.out.print("SETTING UP SELENIUM");
-        Testcontainers.exposeHostPorts(80,8080,9100,9101,port);
-        chromeContainer.start();
-        setDriver(chromeContainer.getWebDriver());
-        LOGGER.info("Connect to VNC via " + chromeContainer.getVncAddress());
-        try {
-            Runtime.getRuntime().exec("open " + chromeContainer.getVncAddress());
-        } catch (IOException e) {
-            // silently fail, if it's not working – e.printStackTrace();
+        if (!chromeContainer.isRunning()) {
+            Runtime.getRuntime().addShutdownHook(afterAllThread);
+            Testcontainers.exposeHostPorts(80, 8080, 9100, 9101, port);
+            chromeContainer.start();
+            LOGGER.info("Connect to VNC via " + chromeContainer.getVncAddress());
+            try {
+                Runtime.getRuntime().exec("open " + chromeContainer.getVncAddress());
+            } catch (IOException e) {
+                // silently fail, if it's not working – e.printStackTrace();
+            }
         }
+        setDriver(chromeContainer.getWebDriver());
     }
 
     @Before

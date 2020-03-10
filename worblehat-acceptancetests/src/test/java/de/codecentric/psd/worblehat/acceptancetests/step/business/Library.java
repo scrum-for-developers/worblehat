@@ -34,7 +34,6 @@ public class Library {
 	
     @Given("an empty library")
     public void emptyLibrary() {
-        System.out.println("GIVEN AN EMPTY LIBRARY STEP");
         bookService.deleteAllBooks();
     }
 

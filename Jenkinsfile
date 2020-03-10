@@ -98,7 +98,7 @@ pipeline {
 //      }
       steps {
         lock(resource: "DEV_ENV", label: null) {
-          sh './mvnw -B -pl worblehat-acceptancetests verify'
+          sh './mvnw -B -pl worblehat-acceptancetests clean verify'
           publishHTML(
                   [allowMissing         : false,
                    alwaysLinkToLastBuild: false,

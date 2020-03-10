@@ -7,41 +7,55 @@ held by [codecentric AG](https://www.codecentric.de/).
 
 ## Requirements
 * JDK 11+
-* Apache Maven (https://maven.apache.org)
 * Docker
+
+Maven comes bundled with the maven wrapper scripts, no need for manual installation before.
 
 ## Running the application
 
-1. Build the project: For example by running `./mvnw install` in the root directory
 1. Start the database. The easiest way is to fire up a docker container with  `worblehat-web/docker-db.sh`.
-3. Run the application.:
-  * Either run `./mvnw -pl worblehat-web spring-boot:run`
-  * Or start as plain Java main class in worblehat-web: `de.codecentric.Application`
-4. Access the application at <http://localhost:8080/worblehat/>
+1. Run the application.:
+  * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
+  * Or start as plain Java main class in worblehat-web: `de.codecentric.psd.Worblehat`
+1. Access the application at <http://localhost:8080/worblehat/>
 
-## Running acceptance tests
+## Running tests
 
-1. The acceptance tests have a dependency on the domain module, so the first
-   step is to ensure that the most recent snapshot is installed in the local
-   maven repository
-   
-   ```
-   root> ./mvnw install
-   ```
-   
-1. Then, we need the application running, that should be tested
+All tests are executed via JUnit, but can be conceptually divided in unit and integration tests. They are bound to different
+maven lifecycle phases, are executed by differen maven plugins, and follow a different naming scheme.
 
-   ```
-   root> ./mvnw -pl worblehat-web spring-boot:run
-   ```
+### Unit Tests
 
-1. Run acceptance tests. It currently requires Chrome to be installed.
+1. Unit tests are run with `./mvnw test`
+1. The [maven-surefire-plugin](https://maven.apache.org/surefire/maven-surefire-plugin) includes
+ [all these tests](https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includes) by default:
+ ```
+<includes>
+    <include>**/Test*.java</include>
+    <include>**/*Test.java</include>
+    <include>**/*Tests.java</include>
+    <include>**/*TestCase.java</include>
+</includes>
+```
 
-   ```
-   root>  ./mvnw -Pinclude-acceptancetests verify
-   ```
+### Acceptance Tests
 
-1. The report can be found in ```target/jbehave/view/reports.html```
+1. Unit tests are run with `./mvnw verify`.
+ 
+   Note: The `verify` lifecycle is executed before `install`. If you want to skip acceptance tests, consider to:
+   * run up to lifecycle phase `package`
+   * skip integration tests with `./mvnw -DskipITs install`
+1. The [maven-failsafe-plugin](https://maven.apache.org/surefire/maven-failsafe-plugin) includes
+ [all these tests](https://maven.apache.org/surefire/maven-failsafe-plugin/integration-test-mojo.html#includes) by default:
+ ```
+<includes>
+    <include>**/IT*.java</include>
+    <include>**/*IT.java</include>
+    <include>**/*ITCase.java</include>
+</includes>
+```
+
+The acceptance tests spin docker containers for all required dependencies (Database & Browser) via [Testcontainers](https://www.testcontainers.org/).
 
 ## Howto Release
 
