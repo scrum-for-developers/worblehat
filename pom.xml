@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -44,6 +45,9 @@
         <psd.dbserver.url>jdbc:mysql://localhost/worblehat_test</psd.dbserver.url>
         <psd.dbserver.username>worblehat</psd.dbserver.username>
         <psd.dbserver.password>worblehat</psd.dbserver.password>
+
+        <!--Allow to exclude TestContainer integration tests, default empty -->
+        <exclude.testcontainer.integrationtests></exclude.testcontainer.integrationtests>
     </properties>
 
     <repositories>
@@ -80,7 +84,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.0</version>
+                    <version>3.0.0-M4</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>${exclude.testcontainer.integrationtests}</exclude>
+                        </excludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -179,6 +188,14 @@
             <modules>
                 <module>worblehat-acceptancetests</module>
             </modules>
+        </profile>
+        <profile>
+            <id>exclude-integrationtests</id>
+            <properties>
+                <exclude.testcontainer.integrationtests>
+                    **/WorblehatSystemIntegrationTest.java
+                </exclude.testcontainer.integrationtests>
+            </properties>
         </profile>
         <profile>
             <id>jenkins</id>
