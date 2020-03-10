@@ -28,8 +28,8 @@ pipeline {
         rtMavenRun (
             tool: 'apache-maven-3.6.3',
             pom: 'pom.xml',
-            goals: 'clean package',
-            opts: '-Xms1024m -Xmx4096m -DskipTests',
+            goals: '-DskipTests -DskipITs clean install',
+            opts: '-Xms1024m -Xmx4096m',
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
         )
@@ -149,7 +149,7 @@ pipeline {
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_prod " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/-executable.jar /opt/worblehat-prod/worblehat.jar"
+          sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-prod/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-prod start"
         }
       }
