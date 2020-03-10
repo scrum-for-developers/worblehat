@@ -28,7 +28,7 @@ pipeline {
         rtMavenRun (
             tool: 'apache-maven-3.6.3',
             pom: 'pom.xml',
-            goals: 'clean install',
+            goals: 'clean package',
             opts: '-Xms1024m -Xmx4096m -DskipTests',
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
@@ -46,7 +46,7 @@ pipeline {
       }
       post {
         always {
-          junit '**/target/surefire-reports//TEST-*.xml'
+          junit '**/target/surefire-reports/TEST-*.xml'
         }
       }
     }
@@ -97,7 +97,7 @@ pipeline {
         //        branch 'master'
         //      }
         steps {
-            sh './mvnw -B -pl worblehat-acceptancetests clean verify'
+            sh './mvnw -B -pl worblehat-acceptancetests verify'
             publishHTML(
                 [allowMissing         : false,
                 alwaysLinkToLastBuild: true,
