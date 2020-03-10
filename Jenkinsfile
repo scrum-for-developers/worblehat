@@ -9,9 +9,9 @@ pipeline {
 
     stage('BUILD') {
       agent any
-      when {
-        branch 'master'
-      }
+//      when {
+//        branch 'master'
+//      }
       steps {
         rtMavenResolver (
             id: 'local-artifactory-resolver',
@@ -28,7 +28,7 @@ pipeline {
         rtMavenRun (
             tool: 'apache-maven-3.6.3',
             pom: 'pom.xml',
-            goals: 'clean install',
+            goals: 'clean package',
             opts: '-Xms1024m -Xmx4096m -DskipTests',
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
@@ -38,24 +38,24 @@ pipeline {
 
     stage('UNIT TEST') {
       agent any
-      when {
-        branch 'master'
-      }
+//      when {
+//        branch 'master'
+//      }
       steps {
-        sh './mvnw -B verify -Pcoverage'
+        sh './mvnw -B test -Pcoverage'
       }
       post {
         always {
-          junit '**/target/surefire-reports/*.xml'
+          junit '**/target/surefire-reports/TEST-*.xml'
         }
       }
     }
 
     stage('QUALITY') {
       agent any
-      when {
-        branch 'master'
-      }
+//      when {
+//        branch 'master'
+//      }
       steps {
         sh './mvnw -B sonar:sonar -Pjenkins'
       }
@@ -85,40 +85,43 @@ pipeline {
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
 
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*.jar /opt/worblehat-test/worblehat.jar"
+          sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-test start"
         }
       }
     }
 
     stage('ACCEPTANCE TEST') {
-      agent any
-      when {
-        branch 'master'
-      }
-      steps {
-        lock(resource: "DEV_ENV", label: null) {
-          sh './mvnw -B verify -Pjenkins -Pheadless -Pinclude-acceptancetests -Dapplication.url=http://host.testcontainers.internal/worblehat-test'
-          publishHTML(
-                  [allowMissing         : false,
-                   alwaysLinkToLastBuild: false,
-                   keepAll              : false,
-                   reportDir            : 'worblehat-acceptancetests/target/jbehave/view',
-                   reportFiles          : 'reports.html',
-                   reportName           : 'Worblehat Acceptance Test Report',
-                   reportTitles         : 'Worblehat Acceptance Test Report']
-          )
+        agent any
+        //      when {
+        //        branch 'master'
+        //      }
+        steps {
+            sh './mvnw -B -pl worblehat-acceptancetests verify'
+            publishHTML(
+                [allowMissing         : false,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : 'worblehat-acceptancetests/target/cucumber',
+                reportFiles          : 'index.html',
+                reportName           : 'Acceptance Test Report',
+                reportTitles         : 'Acceptance Test Report']
+            )
         }
-      }
 
-    post {
-        always {
-            archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+        post {
+            always {
+                archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+                cucumber buildStatus: 'UNSTABLE',
+                    failedFeaturesNumber: 1,
+                    failedScenariosNumber: 1,
+                    skippedStepsNumber: 1,
+                    failedStepsNumber: 1,
+                    fileIncludePattern: '**/target/cucumber-report.json',
+                    sortingMethod: 'ALPHABETICAL',
+                    trendsLimit: 100
+            }
         }
-    }
-
-
-
     }
 
     stage('PROD APPROVAL') {
@@ -146,7 +149,7 @@ pipeline {
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_prod " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*.jar /opt/worblehat-prod/worblehat.jar"
+          sh "cp ${env.WORKSPACE}/worblehat-web/target/-executable.jar /opt/worblehat-prod/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-prod start"
         }
       }

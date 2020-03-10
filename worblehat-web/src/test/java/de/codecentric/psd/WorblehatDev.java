@@ -9,8 +9,8 @@ public class WorblehatDev {
 
     public static void main(String[] args) {
 
-        String postgresStarted = System.getProperty(MYSQL_STARTED_PROP);
-        if (postgresStarted == null) {
+        String mySqlStarted = System.getProperty(MYSQL_STARTED_PROP);
+        if (mySqlStarted == null) {
             initMySQLContainer();
             System.setProperty(MYSQL_STARTED_PROP, "true");
         }

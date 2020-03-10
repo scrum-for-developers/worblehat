@@ -2,9 +2,8 @@ package de.codecentric.psd.worblehat.web.controller;
 
 import de.codecentric.psd.worblehat.domain.Book;
 import de.codecentric.psd.worblehat.domain.BookService;
-import de.codecentric.psd.worblehat.domain.StandardBookService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class BookListControllerTest {
 
     private ModelMap modelMap;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         bookService = mock(BookService.class);
         bookListController = new BookListController(bookService);
