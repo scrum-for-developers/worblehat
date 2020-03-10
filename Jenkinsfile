@@ -42,11 +42,11 @@ pipeline {
 //        branch 'master'
 //      }
       steps {
-        sh './mvnw -B verify -Pcoverage'
+        sh './mvnw -B test -Pcoverage'
       }
       post {
         always {
-          junit '**/target/surefire-reports/*.xml'
+          junit '**/target/surefire-reports//TEST-*.xml'
         }
       }
     }
@@ -92,38 +92,36 @@ pipeline {
     }
 
     stage('ACCEPTANCE TEST') {
-      agent any
-//      when {
-//        branch 'master'
-//      }
-      steps {
-        lock(resource: "DEV_ENV", label: null) {
-          sh './mvnw -B -pl worblehat-acceptancetests clean verify'
-          publishHTML(
-                  [allowMissing         : false,
-                   alwaysLinkToLastBuild: false,
-                   keepAll              : false,
-                   reportDir            : 'worblehat-acceptancetests/target/cucumber',
-                   reportFiles          : 'index.html',
-                   reportName           : 'Worblehat Acceptance Test Report',
-                   reportTitles         : 'Worblehat Acceptance Test Report']
-          )
+        agent any
+        //      when {
+        //        branch 'master'
+        //      }
+        steps {
+            sh './mvnw -B -pl worblehat-acceptancetests clean verify'
+            publishHTML(
+                [allowMissing         : false,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : 'worblehat-acceptancetests/target/cucumber',
+                reportFiles          : 'index.html',
+                reportName           : 'Acceptance Test Report',
+                reportTitles         : 'Acceptance Test Report']
+            )
         }
-          post {
+
+        post {
             always {
-              junit '**/target/cucumber.xml'
+                archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+                cucumber buildStatus: 'UNSTABLE',
+                    failedFeaturesNumber: 1,
+                    failedScenariosNumber: 1,
+                    skippedStepsNumber: 1,
+                    failedStepsNumber: 1,
+                    fileIncludePattern: '**/target/cucumber-report.json',
+                    sortingMethod: 'ALPHABETICAL',
+                    trendsLimit: 100
             }
-          }
-      }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
         }
-    }
-
-
-
     }
 
     stage('PROD APPROVAL') {
