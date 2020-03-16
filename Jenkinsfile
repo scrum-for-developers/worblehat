@@ -18,7 +18,7 @@ pipeline {
             serverId: 'artifactory',
             releaseRepo: 'libs-release',
             snapshotRepo: 'libs-snapshot'
-        )  
+        )
         rtMavenDeployer (
             id: 'local-artifactory-deployer',
             serverId: 'artifactory',
@@ -28,7 +28,7 @@ pipeline {
         rtMavenRun (
             tool: 'apache-maven-3.6.3',
             pom: 'pom.xml',
-            goals: '-DskipTests -DskipITs clean install',
+            goals: '-DskipTests clean install',
             opts: '-Xms1024m -Xmx4096m',
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
@@ -97,7 +97,7 @@ pipeline {
         //        branch 'master'
         //      }
         steps {
-            sh './mvnw -B -pl worblehat-acceptancetests verify'
+            sh './mvnw -B -P runITs verify'
             publishHTML(
                 [allowMissing         : false,
                 alwaysLinkToLastBuild: true,
