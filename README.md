@@ -13,10 +13,11 @@ Maven comes bundled with the maven wrapper scripts, no need for manual installat
 
 ## Running the application
 
+1. Compile and install the application in the local maven repository with `./mvnw install`
 1. Start the database. The easiest way is to fire up a docker container with  `worblehat-web/docker-db.sh`.
 1. Run the application.:
   * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
-  * Or start as plain Java main class in worblehat-web: `de.codecentric.psd.Worblehat`
+  * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`
 1. Access the application at <http://localhost:8080/worblehat/>
 
 ## Running tests
@@ -40,11 +41,9 @@ maven lifecycle phases, are executed by differen maven plugins, and follow a dif
 
 ### Acceptance Tests
 
-1. Unit tests are run with `./mvnw verify`.
+1. Acceptance tests are run by activating the required profile `./mvnw -P runITs verify`.
  
-   Note: The `verify` lifecycle is executed before `install`. If you want to skip acceptance tests, consider to:
-   * run up to lifecycle phase `package`
-   * skip integration tests with `./mvnw -DskipITs install`
+   Note: The `verify` lifecycle is executed before `install`. Integration tests are only included, if the `runITs` profile is activated.
 1. The [maven-failsafe-plugin](https://maven.apache.org/surefire/maven-failsafe-plugin) includes
  [all these tests](https://maven.apache.org/surefire/maven-failsafe-plugin/integration-test-mojo.html#includes) by default:
  ```
