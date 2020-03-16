@@ -47,7 +47,7 @@ public class BorrowBook {
 		seleniumAdapter.typeIntoField("email", borrower);
 		seleniumAdapter.typeIntoField("isbn", isbn);
 		seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
-		String errorMessage = seleniumAdapter.getTextFromElement(PageElement.ISBNERROR);
+		String errorMessage = seleniumAdapter.getTextFromElement(PageElement.ISBN_ERROR);
 		assertThat(errorMessage, is(message));
 	}
 

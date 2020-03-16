@@ -1,6 +1,6 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.page;
 
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
@@ -49,12 +49,11 @@ public class InsertBook {
 	// *****************
 	// *** T H E N *****
 	// *****************
-	@Then("the page contains error message {string}")
-	public void pageContainsErrorMessage(String message){
-		List<String> errorMsgs = seleniumAdapter.findAllStringsForElement(PageElement.ERROR);
-		assertThat(errorMsgs, contains(message));
+	@Then("the page contains error message for field {string}")
+	public void pageContainsErrorMessage(String field){
+		String errorMessage = seleniumAdapter.getTextFromElement(("isbn".equals(field)?PageElement.ISBN_ERROR: PageElement.EDITION_ERROR));
+		assertThat(errorMessage, notNullValue());
 	}
-
 	// *****************
 	// *** U T I L ***** 
 	// *****************
