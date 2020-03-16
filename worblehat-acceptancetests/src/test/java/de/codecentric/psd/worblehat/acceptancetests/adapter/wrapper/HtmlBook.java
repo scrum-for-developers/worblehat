@@ -2,69 +2,77 @@ package de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper;
 
 public class HtmlBook {
 
-	private String title;
-    private String author;
-    private String edition;
-    private String isbn;
-    private String yearOfPublication;
-    private String borrower;
-    public HtmlBook() {
-        title = author = edition = isbn = yearOfPublication = borrower = "";
-    }
-    public HtmlBook(String title, String author, String yearOfPublication, String edition, String isbn, String borrower) {
-        this.title = title;
-        this.author = author;
-        this.edition = edition;
-        this.isbn = isbn;
-        this.yearOfPublication = yearOfPublication;
-        this.borrower = borrower;
-    }
+  private String title;
+  private String author;
+  private String edition;
+  private String isbn;
+  private String yearOfPublication;
+  private String borrower;
 
-    public String getTitle() {
-        return title;
-    }
+  public HtmlBook() {
+    title = author = edition = isbn = yearOfPublication = borrower = "";
+  }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  public HtmlBook(
+      String title,
+      String author,
+      String yearOfPublication,
+      String edition,
+      String isbn,
+      String borrower) {
+    this.title = title;
+    this.author = author;
+    this.edition = edition;
+    this.isbn = isbn;
+    this.yearOfPublication = yearOfPublication;
+    this.borrower = borrower;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public String getEdition() {
-        return edition;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-	public void setEdition(String edition) {
-		this.edition = edition;
-	}
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-    public String getIsbn() {
-        return isbn;
-    }
+  public String getEdition() {
+    return edition;
+  }
 
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
-	}
+  public void setEdition(String edition) {
+    this.edition = edition;
+  }
 
-    public String getYearOfPublication() {
-        return yearOfPublication;
-    }
+  public String getIsbn() {
+    return isbn;
+  }
 
-	public void setYearOfPublication(String yearOfPublication) {
-		this.yearOfPublication = yearOfPublication;
-	}
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
 
-    public String getBorrower() {
-        return borrower;
-    }
+  public String getYearOfPublication() {
+    return yearOfPublication;
+  }
 
-	public void setBorrower(String borrower) {
-		this.borrower = borrower;
-	}
+  public void setYearOfPublication(String yearOfPublication) {
+    this.yearOfPublication = yearOfPublication;
+  }
+
+  public String getBorrower() {
+    return borrower;
+  }
+
+  public void setBorrower(String borrower) {
+    this.borrower = borrower;
+  }
 }
