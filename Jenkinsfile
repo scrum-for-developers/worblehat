@@ -51,18 +51,18 @@ pipeline {
       }
     }
 
+    stage('QUALITY') {
+        agent any
+//      when {
+//        branch 'master'
+//      }
+        steps {
+        sh './mvnw -B sonar:sonar -Pjenkins'
+        }
+    }
+
     stage('LONG RUNNING') {
         parallel {
-
-            stage('QUALITY') {
-              agent any
-        //      when {
-        //        branch 'master'
-        //      }
-              steps {
-                sh './mvnw -B sonar:sonar -Pjenkins'
-              }
-            }
 
             stage('REPORTING') {
               agent any
@@ -72,25 +72,6 @@ pipeline {
               steps {
                 sh './mvnw -B site:site site:stage'
                 sh 'cp -r target/staging/. ${SITE_DEPLOY_PATH}/site'
-              }
-            }
-
-            stage('DEPLOY DEV') {
-              agent any
-              when {
-                branch 'master'
-              }
-              steps {
-                lock(resource: "DEV_ENV", label: null) {
-                  sh "sudo /etc/init.d/worblehat-test stop"
-                  sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
-                          "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
-                          "-Dpsd.dbserver.username=worblehat " +
-                          "-Dpsd.dbserver.password=worblehat"
-
-                  sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
-                  sh "sudo /etc/init.d/worblehat-test start"
-                }
               }
             }
 
@@ -115,7 +96,7 @@ pipeline {
                 post {
                     always {
                         archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
-                        cucumber buildStatus: 'UNSTABLE',
+                        cucumber buildStatus: 'FAILURE',
                             failedFeaturesNumber: 1,
                             failedScenariosNumber: 1,
                             skippedStepsNumber: 1,
@@ -129,6 +110,24 @@ pipeline {
 
         }
     }
+
+    stage('DEPLOY DEV') {
+        agent any
+        when {
+        branch 'master'
+        }
+        steps {
+            sh "sudo /etc/init.d/worblehat-test stop"
+            sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
+                    "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
+                    "-Dpsd.dbserver.username=worblehat " +
+                    "-Dpsd.dbserver.password=worblehat"
+
+            sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
+            sh "sudo /etc/init.d/worblehat-test start"
+        }
+    }
+
 
     stage('PROD APPROVAL') {
       agent none
