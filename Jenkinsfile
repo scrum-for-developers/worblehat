@@ -51,76 +51,82 @@ pipeline {
       }
     }
 
-    stage('QUALITY') {
-      agent any
-//      when {
-//        branch 'master'
-//      }
-      steps {
-        sh './mvnw -B sonar:sonar -Pjenkins'
-      }
-    }
+    stage('LONG RUNNING') {
+        parallel {
 
-    stage('REPORTING') {
-      agent any
-      when {
-        branch 'master'
-      }
-      steps {
-        sh './mvnw -B site:site site:stage'
-        sh 'cp -r target/staging/. ${SITE_DEPLOY_PATH}/site'
-      }
-    }
-
-    stage('DEPLOY DEV') {
-      agent any
-      when {
-        branch 'master'
-      }
-      steps {
-        lock(resource: "DEV_ENV", label: null) {
-          sh "sudo /etc/init.d/worblehat-test stop"
-          sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
-                  "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
-                  "-Dpsd.dbserver.username=worblehat " +
-                  "-Dpsd.dbserver.password=worblehat"
-
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
-          sh "sudo /etc/init.d/worblehat-test start"
-        }
-      }
-    }
-
-    stage('ACCEPTANCE TEST') {
-        agent any
+            stage('QUALITY') {
+              agent any
         //      when {
         //        branch 'master'
         //      }
-        steps {
-            sh './mvnw -B -P runITs verify'
-            publishHTML(
-                [allowMissing         : false,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : 'worblehat-acceptancetests/target/cucumber',
-                reportFiles          : 'index.html',
-                reportName           : 'Acceptance Test Report',
-                reportTitles         : 'Acceptance Test Report']
-            )
-        }
-
-        post {
-            always {
-                archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
-                cucumber buildStatus: 'UNSTABLE',
-                    failedFeaturesNumber: 1,
-                    failedScenariosNumber: 1,
-                    skippedStepsNumber: 1,
-                    failedStepsNumber: 1,
-                    fileIncludePattern: '**/target/cucumber-report.json',
-                    sortingMethod: 'ALPHABETICAL',
-                    trendsLimit: 100
+              steps {
+                sh './mvnw -B sonar:sonar -Pjenkins'
+              }
             }
+
+            stage('REPORTING') {
+              agent any
+              when {
+                branch 'master'
+              }
+              steps {
+                sh './mvnw -B site:site site:stage'
+                sh 'cp -r target/staging/. ${SITE_DEPLOY_PATH}/site'
+              }
+            }
+
+            stage('DEPLOY DEV') {
+              agent any
+              when {
+                branch 'master'
+              }
+              steps {
+                lock(resource: "DEV_ENV", label: null) {
+                  sh "sudo /etc/init.d/worblehat-test stop"
+                  sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
+                          "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
+                          "-Dpsd.dbserver.username=worblehat " +
+                          "-Dpsd.dbserver.password=worblehat"
+
+                  sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
+                  sh "sudo /etc/init.d/worblehat-test start"
+                }
+              }
+            }
+
+            stage('ACCEPTANCE TEST') {
+                agent any
+                //      when {
+                //        branch 'master'
+                //      }
+                steps {
+                    sh './mvnw -B -P runITs verify'
+                    publishHTML(
+                        [allowMissing         : false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : 'worblehat-acceptancetests/target/cucumber',
+                        reportFiles          : 'index.html',
+                        reportName           : 'Acceptance Test Report',
+                        reportTitles         : 'Acceptance Test Report']
+                    )
+                }
+
+                post {
+                    always {
+                        archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+                        cucumber buildStatus: 'UNSTABLE',
+                            failedFeaturesNumber: 1,
+                            failedScenariosNumber: 1,
+                            skippedStepsNumber: 1,
+                            failedStepsNumber: 1,
+                            fileIncludePattern: '**/target/cucumber-report.json',
+                            sortingMethod: 'ALPHABETICAL',
+                            trendsLimit: 100
+                    }
+                }
+            }
+
         }
     }
 
