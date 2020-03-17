@@ -28,7 +28,7 @@ pipeline {
         rtMavenRun (
             tool: 'apache-maven-3.6.3',
             pom: 'pom.xml',
-            goals: '-DskipTests clean install',
+            goals: 'clean install',
             opts: '-Xms1024m -Xmx4096m',
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
@@ -61,8 +61,9 @@ pipeline {
         }
     }
 
-    stage('LONG RUNNING') {
-        parallel {
+//    FIXME - Long running processes could be run in parallel
+//    stage('LONG RUNNING') {
+//        parallel {
 
             stage('REPORTING') {
               agent any
@@ -108,8 +109,8 @@ pipeline {
                 }
             }
 
-        }
-    }
+//        }
+//    }
 
     stage('DEPLOY DEV') {
         agent any
