@@ -30,10 +30,9 @@ public class InsertBook {
   // *** W H E N *****
   // *****************
 
-  @When(
-      "a librarian adds a book with title {string}, author {string}, edition {string}, year {string} and isbn {string}")
+  @When("a librarian adds a book with {string}, {string}, {int}, {string} and {string}")
   public void whenABookWithISBNisbnIsAdded(
-      String title, String author, String edition, String year, String isbn) {
+      String title, String author, int edition, String year, String isbn) {
     seleniumAdapter.gotoPage(Page.INSERTBOOKS);
     fillInsertBookForm(title, author, edition, isbn, year);
     seleniumAdapter.clickOnPageElement(PageElement.ADDBOOKBUTTON);
@@ -45,9 +44,7 @@ public class InsertBook {
   // *****************
   @Then("the page contains error message for field {string}")
   public void pageContainsErrorMessage(String field) {
-    String errorMessage =
-        seleniumAdapter.getTextFromElement(
-            ("isbn".equals(field) ? PageElement.ISBN_ERROR : PageElement.EDITION_ERROR));
+    String errorMessage = seleniumAdapter.getTextFromElement(PageElement.errorFor(field));
     assertThat(errorMessage, notNullValue());
   }
   // *****************
@@ -55,9 +52,9 @@ public class InsertBook {
   // *****************
 
   private void fillInsertBookForm(
-      String title, String author, String edition, String isbn, String year) {
+      String title, String author, Integer edition, String isbn, String year) {
     seleniumAdapter.typeIntoField("title", title);
-    seleniumAdapter.typeIntoField("edition", edition);
+    seleniumAdapter.typeIntoField("edition", edition.toString());
     seleniumAdapter.typeIntoField("isbn", isbn);
     seleniumAdapter.typeIntoField("author", author);
     seleniumAdapter.typeIntoField("yearOfPublication", year);

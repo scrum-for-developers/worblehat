@@ -3,11 +3,13 @@ Feature: Returning - giving back - borrowed books
   Scenario Outline: Returning all books at once
 
     Given an empty library
-    And borrower "<borrower1>" has borrowed books "<isbns1>"
-    And borrower "<borrower2>" has borrowed books "<isbns2>"
-    When borrower "<borrower1>" returns all his books
+    And "<borrower1>" has borrowed books "<isbns1>"
+    And "<borrower2>" has borrowed books "<isbns2>"
+
+    When "<borrower1>" returns all books
+
     Then books "<isbns1>" are not borrowed anymore by borrower "<borrower1>"
-    And books "<isbns2>" are still borrowed by borrower "<borrower2>"
+    But books "<isbns2>" are still borrowed by borrower "<borrower2>"
 
     Examples:
 

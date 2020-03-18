@@ -4,20 +4,21 @@ public class HtmlBook {
 
   private String title;
   private String author;
-  private String edition;
+  private Integer edition;
   private String isbn;
   private String yearOfPublication;
   private String borrower;
 
   public HtmlBook() {
-    title = author = edition = isbn = yearOfPublication = borrower = "";
+    title = author = isbn = yearOfPublication = borrower = "";
+    edition = 0;
   }
 
   public HtmlBook(
       String title,
       String author,
       String yearOfPublication,
-      String edition,
+      Integer edition,
       String isbn,
       String borrower) {
     this.title = title;
@@ -44,11 +45,11 @@ public class HtmlBook {
     this.author = author;
   }
 
-  public String getEdition() {
+  public Integer getEdition() {
     return edition;
   }
 
-  public void setEdition(String edition) {
+  public void setEdition(Integer edition) {
     this.edition = edition;
   }
 

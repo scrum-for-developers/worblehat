@@ -23,13 +23,12 @@ public class BookList {
     this.seleniumAdapter = seleniumAdapter;
   }
 
-  @Then(
-      "the booklist contains a book with values title {string}, author {string}, year {string}, edition {string}, isbn {string}")
+  @Then("the booklist contains a book with {string}, {string}, {string}, {int} and {string}")
   public void bookListContainsRowWithValues(
       final String title,
       final String author,
       final String year,
-      final String edition,
+      final Integer edition,
       final String isbn) {
     seleniumAdapter.gotoPage(Page.BOOKLIST);
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
@@ -48,7 +47,7 @@ public class BookList {
     assertThat(htmlBookList.size(), is(0));
   }
 
-  @Then("the booklist lists the user {string} as borrower for the book with isbn {string}")
+  @Then("the booklist lists {string} as borrower for the book with isbn {string}")
   public void bookListHasBorrowerForBookWithIsbn(final String borrower, final String isbn) {
     Book book = DemoBookFactory.createDemoBook().build();
     Map<String, String> wantedRow =

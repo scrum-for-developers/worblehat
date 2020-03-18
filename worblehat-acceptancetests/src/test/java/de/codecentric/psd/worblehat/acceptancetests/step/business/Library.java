@@ -40,7 +40,7 @@ public class Library {
         book.getTitle(), book.getAuthor(), book.getEdition(), isbn, book.getYearOfPublication());
   }
 
-  @Given("borrower {string} has borrowed books {string}")
+  @Given("{string} has borrowed books {string}")
   public void borrower1HasBorrowerdBooks(String borrower, String isbns) {
     borrowerHasBorrowedBooks(borrower, isbns);
   }
@@ -73,19 +73,11 @@ public class Library {
   // *** T H E N *****
   // *****************
 
-  @Then("the library contains only the book with {string}")
-  public void shouldContainOnlyOneBook(String isbn) {
-    waitForServerResponse();
-    List<Book> books = bookService.findAllBooks();
-    assertThat(books.size(), is(1));
-    assertThat(books.get(0).getIsbn(), is(isbn));
-  }
-
-  @Then("the library contains {int} of the book with {string}")
-  public void shouldContainCopiesOfBook(Integer copies, String isbn) {
+  @Then("the library contains {int} copies of the book with {string}")
+  public void shouldContainCopiesOfBook(Integer nrOfCopies, String isbn) {
     waitForServerResponse();
     Set<Book> books = bookService.findBooksByIsbn(isbn);
-    assertThat(books.size(), is(copies));
+    assertThat(books.size(), is(nrOfCopies));
     assertThat(books, everyItem(hasProperty("isbn", is(isbn))));
   }
 
@@ -94,7 +86,7 @@ public class Library {
     // server response. We are choosing a simple solution for the sake of this
     // training
     try {
-      Thread.sleep(500);
+      Thread.sleep(100);
     } catch (InterruptedException e) {
       // pass
     }
