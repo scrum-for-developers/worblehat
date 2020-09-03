@@ -42,7 +42,7 @@ maven lifecycle phases, are executed by differen maven plugins, and follow a dif
 ### Acceptance Tests
 
 1. Acceptance tests are run by activating the required profile `./mvnw -P runITs verify`.
- 
+
    Note: The `verify` lifecycle is executed before `install`. Integration tests are only included, if the `runITs` profile is activated.
 1. The [maven-failsafe-plugin](https://maven.apache.org/surefire/maven-failsafe-plugin) includes
  [all these tests](https://maven.apache.org/surefire/maven-failsafe-plugin/integration-test-mojo.html#includes) by default:
@@ -60,7 +60,7 @@ The acceptance tests spin docker containers for all required dependencies (Datab
 
 To release for example version 1.2 follow these steps:
 
-1. Set next development version: `mvn -Pinclude-acceptancetests versions:set -DnewVersion=1.2 -DgenerateBackupPoms=false`
+1. Set next development version: `mvn versions:set -DnewVersion=1.2.0 -DgenerateBackupPoms=false`
 1. Create a tag and push the tag back to the team repository
 1. Let jenkins build the release and deploy it to the test and production environments
-1. Bump the version for the next development iteration: `mvn -Pinclude-acceptancetests versions:set -DnewVersion=1.3-SNAPSHOT -DgenerateBackupPoms=false`
+1. Bump the version for the next development iteration: `mvn versions:set -DnewVersion=1.3.0-SNAPSHOT -DgenerateBackupPoms=false`
