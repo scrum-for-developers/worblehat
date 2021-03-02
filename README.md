@@ -71,9 +71,9 @@ The version number should follow [semantic versioning](https://semver.org/):
 To release for example version 1.2.0 follow these steps:
 
 1. Remove Snapshot version: `./mvnw versions:set -DremoveSnapshot`
-  * Alternatively, you can use the interactive mode and just call `./mvnw versions:set`
+    * Alternatively, you can use the interactive mode and just call `./mvnw versions:set`
 1. Optional: Create a git tag and push the tag back to the team repository
-  * `git tag v1.2.0`
-  * `git push origin --tags` or `git push origin v1.2.0`
+    * `git tag v1.2.0`
+    * `git push origin --tags` or `git push origin v1.2.0`
 1. Let jenkins build the release and deploy it to the test and production environments
 1. Bump the version for the next development iteration: `./mvnw versions:set -DnewVersion=1.3.0-SNAPSHOT`
