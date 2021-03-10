@@ -55,6 +55,9 @@ public class InsertBook {
       case "year":
         randomBookBuilder.withYearOfPublication(value);
         break;
+      case "isbn":
+        randomBookBuilder.withISBN(value);
+        break;
     }
     Book randomBook = randomBookBuilder.build();
     fillInsertBookForm(randomBook);

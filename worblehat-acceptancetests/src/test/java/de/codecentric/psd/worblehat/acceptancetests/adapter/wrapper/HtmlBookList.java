@@ -27,26 +27,27 @@ public class HtmlBookList {
       int currentColumn = 0;
       for (WebElement column : headers) {
         switch (column.getText()) {
+          // .getAttribute("textContent") preserves eventually existing whitespace while .getText() does not
           case "Title":
-            book.setTitle(cells.get(currentColumn).getText());
+            book.setTitle(cells.get(currentColumn).getAttribute("textContent"));
             break;
           case "Author":
-            book.setAuthor(cells.get(currentColumn).getText());
+            book.setAuthor(cells.get(currentColumn).getAttribute("textContent"));
             break;
           case "Year":
-            book.setYearOfPublication(cells.get(currentColumn).getText());
+            book.setYearOfPublication(cells.get(currentColumn).getAttribute("textContent"));
             break;
           case "Edition":
-            book.setEdition(Integer.parseInt(cells.get(currentColumn).getText()));
+            book.setEdition(Integer.parseInt(cells.get(currentColumn).getAttribute("textContent")));
             break;
           case "Borrower":
-            book.setBorrower(cells.get(currentColumn).getText());
+            book.setBorrower(cells.get(currentColumn).getAttribute("textContent"));
             break;
           case "ISBN":
-            book.setIsbn(cells.get(currentColumn).getText());
+            book.setIsbn(cells.get(currentColumn).getAttribute("textContent"));
             break;
           case "Description":
-            book.setDescription(cells.get(currentColumn).getText());
+            book.setDescription(cells.get(currentColumn).getAttribute("textContent"));
         }
         currentColumn++;
       }

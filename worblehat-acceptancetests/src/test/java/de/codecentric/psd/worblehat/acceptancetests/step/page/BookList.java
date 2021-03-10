@@ -57,6 +57,10 @@ public class BookList {
         break;
       case "year":
         assertThat(htmlBook.getYearOfPublication(), is(value));
+        break;
+      case "isbn":
+        assertThat(htmlBook.getIsbn(), is(value));
+        break;
     }
   }
 

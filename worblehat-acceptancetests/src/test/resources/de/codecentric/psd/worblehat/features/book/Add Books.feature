@@ -11,9 +11,18 @@ Feature: Adding a new book to the library
         Examples:
             | property | value           |
             | title    | Sourcery        |
-            | title    | Sourcery        |
             | author   | Terry Pratchett |
             | year     | 1989            |
+            | isbn     | 123456789X      |
+
+    Scenario: Adding books with special characters
+
+      Given an empty library
+
+      When a librarian adds a random book and the "title" of that book is "   X   "
+
+      Then the booklist shows that book with "title" as "   X   "
+
 
     Scenario Outline: There can be multiple copies of the same book with the same ISBN
 
