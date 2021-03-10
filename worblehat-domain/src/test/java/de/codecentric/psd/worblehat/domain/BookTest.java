@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class BookTest {
+class BookTest {
 
   Book BOOK;
 
@@ -16,7 +16,7 @@ public class BookTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenAuthorisDifferent() {
+  void shouldReturnFalseWhenAuthorisDifferent() {
     Book anotherCopy =
         new Book(
             BOOK.getTitle(),
@@ -29,7 +29,7 @@ public class BookTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenTitleisDifferent() {
+  void shouldReturnFalseWhenTitleisDifferent() {
     Book anotherCopy =
         new Book(
             BOOK.getTitle(),
@@ -42,7 +42,7 @@ public class BookTest {
   }
 
   @Test
-  public void shouldReturnTrueWhenAllButTitleAndAuthorAreDifferent() {
+  void shouldReturnTrueWhenAllButTitleAndAuthorAreDifferent() {
     Book anotherCopy =
         new Book(
             BOOK.getTitle(),
@@ -57,13 +57,13 @@ public class BookTest {
   }
 
   @Test
-  public void shouldBeBorrowable() {
+  void shouldBeBorrowable() {
     BOOK.borrowNowByBorrower("a@bc.de");
     assertThat(BOOK.getBorrowing().getBorrowerEmailAddress(), is("a@bc.de"));
   }
 
   @Test
-  public void shouldIgnoreNewBorrowWhenBorrowed() {
+  void shouldIgnoreNewBorrowWhenBorrowed() {
     BOOK.borrowNowByBorrower("a@bc.de");
     BOOK.borrowNowByBorrower("a@bc.ru");
     assertThat(BOOK.getBorrowing().getBorrowerEmailAddress(), is("a@bc.de"));

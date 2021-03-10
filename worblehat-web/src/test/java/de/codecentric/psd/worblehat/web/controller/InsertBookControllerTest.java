@@ -20,7 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 
-public class InsertBookControllerTest {
+class InsertBookControllerTest {
 
   private InsertBookController insertBookController;
 
@@ -41,7 +41,7 @@ public class InsertBookControllerTest {
   }
 
   @Test
-  public void shouldSetupForm() {
+  void shouldSetupForm() {
     ModelMap modelMap = new ModelMap();
 
     insertBookController.setupForm(modelMap);
@@ -50,7 +50,7 @@ public class InsertBookControllerTest {
   }
 
   @Test
-  public void shouldRejectErrors() {
+  void shouldRejectErrors() {
     bindingResult.addError(new ObjectError("", ""));
 
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
@@ -59,7 +59,7 @@ public class InsertBookControllerTest {
   }
 
   @Test
-  public void shouldCreateNewCopyOfExistingBook() {
+  void shouldCreateNewCopyOfExistingBook() {
     setupFormData();
     when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(true);
     when(bookService.createBook(any(), any(), any(), any(), anyInt()))
@@ -72,7 +72,7 @@ public class InsertBookControllerTest {
   }
 
   @Test
-  public void shouldCreateBookAndNavigateToBookList() {
+  void shouldCreateBookAndNavigateToBookList() {
     setupFormData();
     when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(false);
     when(bookService.createBook(any(), any(), any(), any(), anyInt()))

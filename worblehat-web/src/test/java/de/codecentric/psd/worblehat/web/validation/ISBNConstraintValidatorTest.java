@@ -2,13 +2,14 @@ package de.codecentric.psd.worblehat.web.validation;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 
 import javax.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ISBNConstraintValidatorTest {
+class ISBNConstraintValidatorTest {
 
   private ISBNConstraintValidator isbnConstraintValidator;
 
@@ -21,25 +22,25 @@ public class ISBNConstraintValidatorTest {
   }
 
   @Test
-  public void initializeShouldTakeIsbn() throws Exception {
+  void initializeShouldTakeIsbn() {
     ISBN isbn = mock(ISBN.class);
-    isbnConstraintValidator.initialize(isbn);
+    assertDoesNotThrow(() -> isbnConstraintValidator.initialize(isbn));
   }
 
   @Test
-  public void shouldReturnTrueIfBlank() throws Exception {
+  void shouldReturnTrueIfBlank() throws Exception {
     boolean actual = isbnConstraintValidator.isValid("", constraintValidatorContext);
     assertTrue(actual);
   }
 
   @Test
-  public void shouldReturnTrueIfValidISBN() throws Exception {
+  void shouldReturnTrueIfValidISBN() throws Exception {
     boolean actual = isbnConstraintValidator.isValid("0132350882", constraintValidatorContext);
     assertTrue(actual);
   }
 
   @Test
-  public void shouldReturnFalseIfInvalidISBN() throws Exception {
+  void shouldReturnFalseIfInvalidISBN() throws Exception {
     boolean actual = isbnConstraintValidator.isValid("0123459789", constraintValidatorContext);
     assertFalse(actual);
   }

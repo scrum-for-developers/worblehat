@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ModelMap;
 
-public class BookListControllerTest {
+class BookListControllerTest {
 
   private BookService bookService;
 
@@ -24,20 +24,20 @@ public class BookListControllerTest {
   private ModelMap modelMap;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     bookService = mock(BookService.class);
     bookListController = new BookListController(bookService);
     modelMap = new ModelMap();
   }
 
   @Test
-  public void shouldNavigateToBookList() throws Exception {
+  void shouldNavigateToBookList() throws Exception {
     String url = bookListController.setupForm(modelMap);
     assertThat(url, is("bookList"));
   }
 
   @Test
-  public void shouldContainBooks() throws Exception {
+  void shouldContainBooks() throws Exception {
     List<Book> bookList = new ArrayList();
     bookList.add(TEST_BOOK);
     when(bookService.findAllBooks()).thenReturn(bookList);

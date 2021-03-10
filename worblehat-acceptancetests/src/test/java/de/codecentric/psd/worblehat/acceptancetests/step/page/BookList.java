@@ -85,7 +85,8 @@ public class BookList {
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
     doWithEach(
         isbns,
-        (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(isEmptyOrNullString())));
+        (isbn) ->
+            assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(isEmptyOrNullString())));
   }
 
   @Then("books {string} are still borrowed by borrower {string}")
@@ -93,7 +94,6 @@ public class BookList {
     seleniumAdapter.gotoPage(Page.BOOKLIST);
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
     doWithEach(
-        isbns,
-        (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(borrower2)));
+        isbns, (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(borrower2)));
   }
 }

@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /** Controller class for the book table result. */
 @Controller
@@ -21,7 +21,7 @@ public class BookListController {
     this.bookService = bookService;
   }
 
-  @RequestMapping(method = RequestMethod.GET)
+  @GetMapping
   public String setupForm(ModelMap modelMap) {
     List<Book> books = bookService.findAllBooks();
     modelMap.addAttribute("books", books);

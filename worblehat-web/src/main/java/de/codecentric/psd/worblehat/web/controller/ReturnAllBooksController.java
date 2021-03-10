@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 /** Controller class for the */
 @Controller
@@ -23,12 +21,12 @@ public class ReturnAllBooksController {
     this.bookService = bookService;
   }
 
-  @RequestMapping(method = RequestMethod.GET)
+  @GetMapping
   public void prepareView(ModelMap modelMap) {
     modelMap.put("returnAllBookFormData", new ReturnAllBooksFormData());
   }
 
-  @RequestMapping(method = RequestMethod.POST)
+  @PostMapping
   public String returnAllBooks(
       @ModelAttribute("returnAllBookFormData") @Valid ReturnAllBooksFormData formData,
       BindingResult result) {

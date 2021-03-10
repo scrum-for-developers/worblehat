@@ -1,6 +1,8 @@
 package de.codecentric.psd;
 
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @SpringBootApplication
 public class Worblehat {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Worblehat.class);
 
   @Configuration
   public static class SecurityPermitAllConfig extends WebSecurityConfigurerAdapter {
@@ -27,7 +31,7 @@ public class Worblehat {
     // this code is basically to (a) demonstrate how to stop a Spring application
     // and (b)
     // get rid of the SonarQube warning to close the context properly
-    System.out.println("Enter 'stop' to stop Worblehat.");
+    LOG.info("Enter 'stop' to stop Worblehat.");
     String line = "";
     do {
       line = scan.nextLine();

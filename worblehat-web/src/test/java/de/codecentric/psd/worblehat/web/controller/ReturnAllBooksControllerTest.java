@@ -17,7 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 
-public class ReturnAllBooksControllerTest {
+class ReturnAllBooksControllerTest {
 
   private ReturnAllBooksController returnAllBooksController;
 
@@ -28,7 +28,7 @@ public class ReturnAllBooksControllerTest {
   private BindingResult bindingResult;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     bookService = mock(BookService.class);
     returnAllBooksController = new ReturnAllBooksController(bookService);
     returnAllBooksFormData = new ReturnAllBooksFormData();
@@ -36,7 +36,7 @@ public class ReturnAllBooksControllerTest {
   }
 
   @Test
-  public void shouldSetupForm() throws Exception {
+  void shouldSetupForm() throws Exception {
     ModelMap modelMap = new ModelMap();
 
     returnAllBooksController.prepareView(modelMap);
@@ -45,7 +45,7 @@ public class ReturnAllBooksControllerTest {
   }
 
   @Test
-  public void shouldRejectErrors() throws Exception {
+  void shouldRejectErrors() throws Exception {
     bindingResult.addError(new ObjectError("", ""));
 
     String navigateTo =
@@ -55,7 +55,7 @@ public class ReturnAllBooksControllerTest {
   }
 
   @Test
-  public void shouldReturnAllBooksAndNavigateHome() throws Exception {
+  void shouldReturnAllBooksAndNavigateHome() throws Exception {
     String borrower = "someone@codecentric.de";
     returnAllBooksFormData.setEmailAddress(borrower);
 

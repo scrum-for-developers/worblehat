@@ -21,7 +21,7 @@ public class HtmlBookList {
   private void extractValues(WebElement tbody) {
     values = new HashMap<>();
     for (WebElement row : tbody.findElements(By.tagName("tr"))) {
-      List<WebElement> cells = row.findElements(By.tagName("td"));
+      List<WebElement> cells = row.findElements(By.cssSelector("td,th"));
 
       HtmlBook book = new HtmlBook();
       int currentColumn = 0;

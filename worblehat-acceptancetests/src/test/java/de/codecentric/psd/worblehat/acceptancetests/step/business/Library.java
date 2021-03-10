@@ -92,7 +92,7 @@ public class Library {
     // server response. We are choosing a simple solution for the sake of this
     // training
     try {
-      Thread.sleep(100);
+      Thread.sleep(100); // NOSONAR
     } catch (InterruptedException e) {
       // pass
     }

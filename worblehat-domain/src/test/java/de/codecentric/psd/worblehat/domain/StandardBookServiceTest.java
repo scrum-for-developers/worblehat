@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-public class StandardBookServiceTest {
+ class StandardBookServiceTest {
 
   private BorrowingRepository borrowingRepository;
 
@@ -30,7 +30,7 @@ public class StandardBookServiceTest {
   private Borrowing aBorrowing, aBorrowingOfCopy, anotherBorrowing;
 
   @BeforeEach
-  public void setup() {
+   void setup() {
     aBook = new Book("title", "author", "edition", "isbn", 2016);
     aCopyofBook = new Book("title", "author", "edition", "isbn", 2016);
     anotherBook = new Book("title2", "author2", "edition2", "isbn2", 2016);
@@ -74,13 +74,13 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldReturnAllBooksOfOnePerson() {
+   void shouldReturnAllBooksOfOnePerson() {
     bookService.returnAllBooksByBorrower(BORROWER_EMAIL);
     verify(borrowingRepository).delete(anotherBorrowing);
   }
 
   @Test
-  public void shouldSaveBorrowingWithBorrowerEmail() {
+   void shouldSaveBorrowingWithBorrowerEmail() {
     givenALibraryWith(aBook);
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
@@ -90,14 +90,14 @@ public class StandardBookServiceTest {
   }
 
   @Test()
-  public void shouldNotBorrowWhenBookAlreadyBorrowed() {
+   void shouldNotBorrowWhenBookAlreadyBorrowed() {
     givenALibraryWith(aBorrowedBook);
     Optional<Borrowing> borrowing = bookService.borrowBook(aBorrowedBook.getIsbn(), BORROWER_EMAIL);
     assertTrue(!borrowing.isPresent());
   }
 
   @Test
-  public void shouldSelectOneOfTwoBooksWhenBothAreNotBorrowed() {
+   void shouldSelectOneOfTwoBooksWhenBothAreNotBorrowed() {
     givenALibraryWith(aBook, aCopyofBook);
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
@@ -109,7 +109,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldSelectUnborrowedOfTwoBooksWhenOneIsBorrowed() {
+   void shouldSelectUnborrowedOfTwoBooksWhenOneIsBorrowed() {
     givenALibraryWith(aBook, aBorrowedBook);
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
@@ -119,7 +119,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAllBooksAreBorrowedRightNow() {
+   void shouldThrowExceptionWhenAllBooksAreBorrowedRightNow() {
     givenALibraryWith(aBorrowedBook, aCopyofBorrowedBook);
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     Optional<Borrowing> borrowing = bookService.borrowBook(aBorrowedBook.getIsbn(), BORROWER_EMAIL);
@@ -128,7 +128,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldCreateBook() {
+   void shouldCreateBook() {
     when(bookRepository.save(any(Book.class))).thenReturn(aBook);
     bookService.createBook(
         aBook.getTitle(),
@@ -151,7 +151,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldCreateAnotherCopyOfExistingBook() {
+   void shouldCreateAnotherCopyOfExistingBook() {
     when(bookRepository.save(any(Book.class))).thenReturn(aBook);
     bookService.createBook(
         aBook.getTitle(),
@@ -163,7 +163,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldNotCreateAnotherCopyOfExistingBookWithDifferentTitle() {
+   void shouldNotCreateAnotherCopyOfExistingBookWithDifferentTitle() {
     givenALibraryWith(aBook);
     bookService.createBook(
         aBook.getTitle() + "X",
@@ -175,7 +175,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldNotCreateAnotherCopyOfExistingBookWithDifferentAuthor() {
+   void shouldNotCreateAnotherCopyOfExistingBookWithDifferentAuthor() {
     givenALibraryWith(aBook);
     bookService.createBook(
         aBook.getTitle(),
@@ -187,7 +187,7 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldFindAllBooks() {
+   void shouldFindAllBooks() {
     List<Book> expectedBooks = new ArrayList<>();
     expectedBooks.add(aBook);
     when(bookRepository.findAllByOrderByTitle()).thenReturn(expectedBooks);
@@ -196,21 +196,21 @@ public class StandardBookServiceTest {
   }
 
   @Test
-  public void shouldVerifyExistingBooks() {
+   void shouldVerifyExistingBooks() {
     when(bookRepository.findByIsbn(aBook.getIsbn())).thenReturn(Collections.singleton(aBook));
     Boolean bookExists = bookService.bookExists(aBook.getIsbn());
     assertTrue(bookExists);
   }
 
   @Test
-  public void shouldVerifyNonexistingBooks() {
+   void shouldVerifyNonexistingBooks() {
     when(bookRepository.findByIsbn(aBook.getIsbn())).thenReturn(Collections.emptySet());
     Boolean bookExists = bookService.bookExists(aBook.getIsbn());
     assertThat(bookExists, is(false));
   }
 
   @Test
-  public void shouldDeleteAllBooksAndBorrowings() {
+   void shouldDeleteAllBooksAndBorrowings() {
     bookService.deleteAllBooks();
     verify(bookRepository).deleteAll();
     verify(borrowingRepository).deleteAll();

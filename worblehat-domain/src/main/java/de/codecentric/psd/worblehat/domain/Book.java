@@ -18,7 +18,6 @@ public class Book implements Serializable {
   private String author;
   private String edition;
 
-  // TODO: convert String to an ISBN class, that ensures a valid ISBN
   private String isbn;
   private int yearOfPublication;
 

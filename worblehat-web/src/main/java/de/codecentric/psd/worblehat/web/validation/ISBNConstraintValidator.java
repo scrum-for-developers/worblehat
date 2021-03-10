@@ -8,9 +8,6 @@ import org.apache.commons.validator.routines.ISBNValidator;
 public class ISBNConstraintValidator implements ConstraintValidator<ISBN, String> {
 
   @Override
-  public void initialize(ISBN constraintAnnotation) {}
-
-  @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
     // Don't validate null, empty and blank strings, since these are validated by @NotNull,
     // @NotEmpty and @NotBlank

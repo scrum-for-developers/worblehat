@@ -13,16 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 /** Controller for BorrowingBook */
 @RequestMapping("/borrow")
 @Controller
 public class BorrowBookController {
 
+  private static final String BORROW = "borrow";
   private BookService bookService;
 
   @Autowired
@@ -30,23 +28,23 @@ public class BorrowBookController {
     this.bookService = bookService;
   }
 
-  @RequestMapping(method = RequestMethod.GET)
+  @GetMapping
   public void setupForm(final ModelMap model) {
     model.put("borrowFormData", new BookBorrowFormData());
   }
 
   @Transactional
-  @RequestMapping(method = RequestMethod.POST)
+  @PostMapping
   public String processSubmit(
       @ModelAttribute("borrowFormData") @Valid BookBorrowFormData borrowFormData,
       BindingResult result) {
     if (result.hasErrors()) {
-      return "borrow";
+      return BORROW;
     }
     Set<Book> books = bookService.findBooksByIsbn(borrowFormData.getIsbn());
     if (books.isEmpty()) {
       result.rejectValue("isbn", "noBookExists");
-      return "borrow";
+      return BORROW;
     }
     Optional<Borrowing> borrowing =
         bookService.borrowBook(borrowFormData.getIsbn(), borrowFormData.getEmail());
@@ -56,7 +54,7 @@ public class BorrowBookController {
         .orElseGet(
             () -> {
               result.rejectValue("isbn", "noBorrowableBooks");
-              return "borrow";
+              return BORROW;
             });
   }
 
