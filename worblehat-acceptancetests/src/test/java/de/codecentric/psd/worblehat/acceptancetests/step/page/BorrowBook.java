@@ -1,5 +1,6 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.page;
 
+import static de.codecentric.psd.worblehat.acceptancetests.step.StepUtilities.doWithEach;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -27,26 +28,35 @@ public class BorrowBook {
   // *** W H E N *****s
   // *****************
 
-  @When("{string} borrows the book {string}")
-  public void whenUseruserBorrowsTheBookisbn(String user, String isbn) {
-    seleniumAdapter.gotoPage(Page.BORROWBOOK);
-    seleniumAdapter.typeIntoField("email", user);
-    seleniumAdapter.typeIntoField("isbn", isbn);
-    seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
+  @When("{string} borrows the book(s) {string}")
+  public void whenUseruserBorrowsTheBookisbn(String user, String isbns) {
+    doWithEach(
+        isbns,
+        (isbn) -> {
+          seleniumAdapter.gotoPage(Page.BORROWBOOK);
+          seleniumAdapter.typeIntoField("email", user);
+          seleniumAdapter.typeIntoField("isbn", isbn);
+          seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
+        });
   }
 
   // *****************
   // *** T H E N *****
   // *****************
 
-  @Then("I get an error {string}, when {string} tries to borrow the book with isbn {string} again")
+  @Then(
+      "{string} gets the error {string}, when trying to borrow the book with one of the {string} again")
   public void whenBorrowerBorrowsBorrowedBookShowErrorMessage(
-      String message, String borrower, String isbn) {
-    seleniumAdapter.gotoPage(Page.BORROWBOOK);
-    seleniumAdapter.typeIntoField("email", borrower);
-    seleniumAdapter.typeIntoField("isbn", isbn);
-    seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
-    String errorMessage = seleniumAdapter.getTextFromElement(PageElement.ISBN_ERROR);
-    assertThat(errorMessage, is(message));
+      String borrower, String message, String isbns) {
+    doWithEach(
+        isbns,
+        (isbn) -> {
+          seleniumAdapter.gotoPage(Page.BORROWBOOK);
+          seleniumAdapter.typeIntoField("email", borrower);
+          seleniumAdapter.typeIntoField("isbn", isbn);
+          seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
+          String errorMessage = seleniumAdapter.getTextFromElement(PageElement.ISBN_ERROR);
+          assertThat(errorMessage, is(message));
+        });
   }
 }

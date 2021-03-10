@@ -1,5 +1,6 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.business;
 
+import static de.codecentric.psd.worblehat.acceptancetests.step.StepUtilities.doWithEach;
 import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,38 +34,43 @@ public class Library {
     bookService.deleteAllBooks();
   }
 
-  @Given("a library, containing a book with isbn {string}")
-  public void createLibraryWithSingleBookWithGivenIsbn(String isbn) {
-    Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
-    bookService.createBook(
-        book.getTitle(), book.getAuthor(), book.getEdition(), isbn, book.getYearOfPublication());
+  @Given("a library, containing only (a )book(s) with isbn(s) {string}")
+  public void createLibraryWithSingleBookWithGivenIsbn(String isbns) {
+    bookService.deleteAllBooks();
+    doWithEach(
+        isbns,
+        (isbn) -> {
+          Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
+          bookService
+              .createBook(
+                  book.getTitle(),
+                  book.getAuthor(),
+                  book.getEdition(),
+                  isbn,
+                  book.getYearOfPublication())
+              .orElseThrow(IllegalStateException::new);
+        });
   }
 
   @Given("{string} has borrowed books {string}")
-  public void borrower1HasBorrowerdBooks(String borrower, String isbns) {
-    borrowerHasBorrowedBooks(borrower, isbns);
+  public void borrowerHasBorrowerdBooks(String borrower, String isbns) {
+    doWithEach(
+        isbns,
+        (isbn) -> {
+          Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
+          bookService
+              .createBook(
+                  book.getTitle(),
+                  book.getAuthor(),
+                  book.getEdition(),
+                  isbn,
+                  book.getYearOfPublication())
+              .orElseThrow(IllegalStateException::new);
+
+          bookService.borrowBook(book.getIsbn(), borrower);
+        });
   }
 
-  public void borrowerHasBorrowedBooks(String borrower, String isbns) {
-    List<String> isbnList = getListOfItems(isbns);
-    for (String isbn : isbnList) {
-      Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
-      bookService
-          .createBook(
-              book.getTitle(),
-              book.getAuthor(),
-              book.getEdition(),
-              isbn,
-              book.getYearOfPublication())
-          .orElseThrow(IllegalStateException::new);
-
-      bookService.borrowBook(book.getIsbn(), borrower);
-    }
-  }
-
-  private List<String> getListOfItems(String isbns) {
-    return isbns.isEmpty() ? Collections.emptyList() : Arrays.asList(isbns.split(" "));
-  }
   // *****************
   // *** W H E N *****
   // *****************
