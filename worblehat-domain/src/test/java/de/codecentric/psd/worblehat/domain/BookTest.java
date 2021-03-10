@@ -16,7 +16,7 @@ public class BookTest {
   }
 
   @Test
-  public void shouldReturnFalseWhenAuthorisDifferent() {
+  void shouldReturnFalseWhenAuthorisDifferent() {
     Book anotherCopy =
         new Book(
             BOOK.getTitle(),
