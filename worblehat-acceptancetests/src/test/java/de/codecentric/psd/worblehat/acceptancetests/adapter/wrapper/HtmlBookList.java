@@ -45,6 +45,8 @@ public class HtmlBookList {
           case "ISBN":
             book.setIsbn(cells.get(currentColumn).getText());
             break;
+          case "Description":
+            book.setDescription(cells.get(currentColumn).getText());
         }
         currentColumn++;
       }
