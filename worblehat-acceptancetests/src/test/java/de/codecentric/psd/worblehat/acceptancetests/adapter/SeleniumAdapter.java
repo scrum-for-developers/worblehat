@@ -9,11 +9,12 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.io.FileUtils;
-import org.joda.time.LocalDateTime;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
@@ -84,7 +85,8 @@ public class SeleniumAdapter {
 
   @Before
   public void initSelenium() {
-    folderName = LocalDateTime.now().toString("yyyy-MM-dd HH:mm").concat(File.separator);
+    folderName =
+        LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).concat(File.separator);
     folderName = "target" + File.separator + "screenshots" + File.separator + folderName;
     new File(folderName).mkdirs();
   }

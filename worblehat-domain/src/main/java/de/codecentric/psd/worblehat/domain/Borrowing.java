@@ -1,9 +1,8 @@
 package de.codecentric.psd.worblehat.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.persistence.*;
-import org.joda.time.DateTime;
 
 /** Borrowing Entity */
 @Entity
@@ -17,33 +16,32 @@ public class Borrowing implements Serializable {
 
   private String borrowerEmailAddress;
 
-  @Temporal(TemporalType.DATE)
-  private Date borrowDate;
+  private LocalDate borrowDate;
 
   @OneToOne() private Book borrowedBook;
-
-  public String getBorrowerEmailAddress() {
-    return borrowerEmailAddress;
-  }
 
   /**
    * @param book The borrowed book
    * @param borrowerEmailAddress The borrowers e-mail Address
    * @param borrowDate The borrow date
    */
-  public Borrowing(Book book, String borrowerEmailAddress, DateTime borrowDate) {
+  public Borrowing(Book book, String borrowerEmailAddress, LocalDate borrowDate) {
     super();
     this.borrowedBook = book;
     this.borrowerEmailAddress = borrowerEmailAddress;
-    this.borrowDate = borrowDate.toDate();
+    this.borrowDate = borrowDate;
   }
 
   public Borrowing(Book book, String borrowerEmailAddress) {
-    this(book, borrowerEmailAddress, DateTime.now());
+    this(book, borrowerEmailAddress, LocalDate.now());
   }
 
   private Borrowing() {
     // for JPA
+  }
+
+  public String getBorrowerEmailAddress() {
+    return borrowerEmailAddress;
   }
 
   public Book getBorrowedBook() {

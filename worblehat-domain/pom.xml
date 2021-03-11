@@ -40,13 +40,6 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <!-- previously, this dependency came with Spring Boot.
-            If you want to continue using it, you need to provide the desired version to maven.-->
-            <!-- version>2.10.10</version -->
-        </dependency>
-        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>3.0.2</version>
