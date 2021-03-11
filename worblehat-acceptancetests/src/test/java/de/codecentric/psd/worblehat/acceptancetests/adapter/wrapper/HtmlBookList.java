@@ -27,7 +27,8 @@ public class HtmlBookList {
       int currentColumn = 0;
       for (WebElement column : headers) {
         switch (column.getText()) {
-          // .getAttribute("textContent") preserves eventually existing whitespace while .getText() does not
+            // .getAttribute("textContent") preserves eventually existing whitespace while
+            // .getText() does not
           case "Title":
             book.setTitle(cells.get(currentColumn).getAttribute("textContent"));
             break;

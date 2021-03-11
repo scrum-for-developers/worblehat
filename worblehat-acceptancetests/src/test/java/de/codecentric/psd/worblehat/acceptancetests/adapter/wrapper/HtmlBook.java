@@ -16,12 +16,12 @@ public class HtmlBook {
   }
 
   public HtmlBook(
-    String title,
-    String author,
-    String yearOfPublication,
-    Integer edition,
-    String isbn,
-    String borrower) {
+      String title,
+      String author,
+      String yearOfPublication,
+      Integer edition,
+      String isbn,
+      String borrower) {
     this.title = title;
     this.author = author;
     this.edition = edition;
