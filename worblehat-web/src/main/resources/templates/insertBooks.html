@@ -5,8 +5,8 @@
 </head>
 <body>
 <h1>Add Book</h1>
-
 <form th:object="${bookDataFormData}" method="POST">
+  <p th:if="${#fields.hasGlobalErrors()}" th:errors="*{global}"></p>
   Title:<input type="text" th:field="*{title}"/>
   <span id="title.error" class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
   <br/>

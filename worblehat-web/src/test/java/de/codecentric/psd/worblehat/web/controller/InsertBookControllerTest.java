@@ -2,10 +2,7 @@ package de.codecentric.psd.worblehat.web.controller;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import de.codecentric.psd.worblehat.domain.Book;
@@ -59,9 +56,8 @@ class InsertBookControllerTest {
   }
 
   @Test
-  void shouldCreateNewCopyOfExistingBook() {
+  void shouldCreateBookAndNavigateToBookList() {
     setupFormData();
-    when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(true);
     when(bookService.createBook(any(), any(), any(), any(), anyInt()))
         .thenReturn(Optional.of(TEST_BOOK));
 
@@ -72,16 +68,16 @@ class InsertBookControllerTest {
   }
 
   @Test
-  void shouldCreateBookAndNavigateToBookList() {
+  void shouldStayOnInsertBookPageWhenCreatingBookFails() {
     setupFormData();
-    when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(false);
     when(bookService.createBook(any(), any(), any(), any(), anyInt()))
-        .thenReturn(Optional.of(TEST_BOOK));
+      .thenReturn(Optional.empty());
 
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
 
     verifyBookIsCreated();
-    assertThat(navigateTo, is("redirect:bookList"));
+    assertThat(bindingResult.getGlobalErrors(), hasItem(hasProperty("codes", hasItemInArray("duplicateIsbn"))));
+    assertThat(navigateTo, is("insertBooks"));
   }
 
   private void verifyBookIsCreated() {

@@ -51,6 +51,8 @@ public class InsertBookController {
         LOG.info("new book instance is created: {}", book.get());
       } else {
         LOG.debug("failed to create new book with: {}", bookDataFormData);
+        result.reject("duplicateIsbn");
+        return "insertBooks";
       }
       return "redirect:bookList";
     }
