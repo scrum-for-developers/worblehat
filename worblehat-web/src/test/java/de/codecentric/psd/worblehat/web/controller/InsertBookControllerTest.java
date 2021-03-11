@@ -70,13 +70,14 @@ class InsertBookControllerTest {
   @Test
   void shouldStayOnInsertBookPageWhenCreatingBookFails() {
     setupFormData();
-    when(bookService.createBook(any(), any(), any(), any(), anyInt()))
-      .thenReturn(Optional.empty());
+    when(bookService.createBook(any(), any(), any(), any(), anyInt())).thenReturn(Optional.empty());
 
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
 
     verifyBookIsCreated();
-    assertThat(bindingResult.getGlobalErrors(), hasItem(hasProperty("codes", hasItemInArray("duplicateIsbn"))));
+    assertThat(
+        bindingResult.getGlobalErrors(),
+        hasItem(hasProperty("codes", hasItemInArray("duplicateIsbn"))));
     assertThat(navigateTo, is("insertBooks"));
   }
 

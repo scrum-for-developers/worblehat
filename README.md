@@ -56,6 +56,46 @@ maven lifecycle phases, are executed by differen maven plugins, and follow a dif
 
 The acceptance tests spin docker containers for all required dependencies (Database & Browser) via [Testcontainers](https://www.testcontainers.org/).
 
+## IDEs
+
+### Intellij IDEA
+
+In IDEA, you can use the `CodeWithMe` Plugin to work together on the same piece of code, even if you're remote.
+
+You should be able to run the application, as well as the acceptance tests not only via maven, but also from within the IDE.
+Right-Click the class `Worblehat` in `worblehat-web` or `AcceptanceTestsIT` in `worblehat-acceptancetests`and run them.
+
+In order to run single acceptance tests, your best option is to use the cucumber plugin in IDEA, with which you can
+start single Scenarios or Features from within the editor window.
+
+### VisualStudio Code
+
+With vs code, you can use the LiveShare feature to develop worblehat together. You can even share your port localhost:8080
+so that everybody, who participates in the LiveShare session can access the application, even if it's only running on the hosts'
+computer.
+
+## Ideas
+
+### Long build times
+
+If your build is taking too long, here are some strategies:
+* try to reduce the amount of work in feature branches
+* try to do steps in parallel
+* try to reduce the amount of generated reports (maven-project-info-reports-plugin)
+
+### Hot Reloading
+
+Spring Boot is running in development mode, this means that it restarts the context when new
+classes or resources are detected. Saving (and rebuilding) the class or html template should suffice
+in order for the browser to pickup the changes on reload. If you use a live reload plugin
+(like [LiveReload for Chrome](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei))
+your browser will automatically refresh, and you don't even have to reload the page.
+
+### Debugging
+
+It is possible in IDEA and code to start the class `AcceptanceTestsIT` in debug mode, which enables you to
+set breakpoints in the step definitions. This might help to understand, why things are not working as expected.
+
 ## Howto Release
 
 ### Changelog

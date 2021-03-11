@@ -195,10 +195,11 @@
                 <reportSets>
                     <reportSet>
                         <reports>
+                            <!-- long running build pipeline? Try to remove the number of reports, if they're not valuable to you -->
                             <report>index</report>
                             <report>dependencies</report>
                             <report>dependency-convergence</report>
-                            <report>dependency-management</report> <!-- TODO this report really takes a lot of time, is it really necessary?! -->
+                            <report>dependency-management</report>
                             <report>summary</report>
                             <report>modules</report>
                         </reports>

@@ -15,9 +15,7 @@ public class Borrowing implements Serializable {
   private long id; // NOSONAR
 
   private String borrowerEmailAddress;
-
   private LocalDate borrowDate;
-
   @OneToOne() private Book borrowedBook;
 
   /**
@@ -38,6 +36,14 @@ public class Borrowing implements Serializable {
 
   private Borrowing() {
     // for JPA
+  }
+
+  public LocalDate getBorrowDate() {
+    return borrowDate;
+  }
+
+  public void setBorrowDate(LocalDate borrowDate) {
+    this.borrowDate = borrowDate;
   }
 
   public String getBorrowerEmailAddress() {
