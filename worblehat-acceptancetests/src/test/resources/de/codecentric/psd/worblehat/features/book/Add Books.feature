@@ -19,9 +19,9 @@ Feature: Adding a new book to the library
 
       Given an empty library
 
-      When a librarian adds a random book and the "title" of that book is "   ❤️   "
+      When a librarian adds a random book and the "title" of that book is "  X  "
 
-      Then the booklist shows that book with "title" as "   ❤️   "
+      Then the booklist shows that book with "title" as "  X  "
 
 
     Scenario Outline: There can be multiple copies of the same book with the same ISBN
