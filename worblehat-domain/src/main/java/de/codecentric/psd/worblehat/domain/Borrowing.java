@@ -42,10 +42,6 @@ public class Borrowing implements Serializable {
     return borrowDate;
   }
 
-  public void setBorrowDate(LocalDate borrowDate) {
-    this.borrowDate = borrowDate;
-  }
-
   public String getBorrowerEmailAddress() {
     return borrowerEmailAddress;
   }
