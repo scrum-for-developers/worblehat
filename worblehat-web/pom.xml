@@ -65,10 +65,6 @@
             <artifactId>spring-boot-admin-starter-client</artifactId>
             <version>2.2.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
