@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Footer Fragment</title>
+</head>
+<body>
+
+<footer th:fragment="subpage-footer">
+  <hr/>
+  <a th:href="@{/}">Back to Home</a>
+</footer>
+
+<div th:fragment="version">Version: …</div>
+
+<div th:fragment="copyright">&copy; 2011-<span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"/> <a
+  href="https://www.codecentric.de">codecentric AG</a></div>
+
+</body>
+</html>
