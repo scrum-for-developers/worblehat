@@ -48,7 +48,11 @@ public class InsertBookController {
               bookDataFormData.getIsbn(),
               Integer.parseInt(bookDataFormData.getYearOfPublication()));
       if (book.isPresent()) {
-        LOG.info("new book instance is created: {}", book.get());
+        Book newBook = book.get();
+        // === HINT ===
+        // you can modify the book or set new properties here
+        bookService.updateBook(newBook);
+        LOG.info("new book instance is created: {}", newBook);
       } else {
         LOG.debug("failed to create new book with: {}", bookDataFormData);
         result.reject("duplicateIsbn");

@@ -34,8 +34,9 @@ public class Borrowing implements Serializable {
     this(book, borrowerEmailAddress, LocalDate.now());
   }
 
+  /** Empty constructor needed by Hibernate. */
   private Borrowing() {
-    // for JPA
+    super();
   }
 
   public LocalDate getBorrowDate() {
@@ -48,5 +49,16 @@ public class Borrowing implements Serializable {
 
   public Book getBorrowedBook() {
     return borrowedBook;
+  }
+
+  @Override
+  public String toString() {
+    return "Borrowing{"
+        + "borrowerEmailAddress='"
+        + borrowerEmailAddress
+        + '\''
+        + ", borrowDate="
+        + borrowDate
+        + '}';
   }
 }

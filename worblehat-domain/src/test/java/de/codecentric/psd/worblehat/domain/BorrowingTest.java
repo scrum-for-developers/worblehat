@@ -1,5 +1,6 @@
 package de.codecentric.psd.worblehat.domain;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,5 +35,13 @@ class BorrowingTest {
   @Test
   void shouldReturnBorrower() {
     assertThat(borrowing.getBorrowerEmailAddress(), is("user@domain.com"));
+  }
+
+  @Test
+  void shouldReturnRelevatInfoInToString() {
+    String borrowingAsString = borrowing.toString();
+    assertThat(borrowingAsString, containsString("borrowerEmailAddress"));
+    assertThat(borrowingAsString, containsString("borrowDate"));
+    assertThat(borrowingAsString, containsString("user@domain.com"));
   }
 }

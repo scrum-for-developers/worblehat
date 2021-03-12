@@ -130,6 +130,8 @@ public class Book implements Serializable {
         + '\''
         + ", yearOfPublication="
         + yearOfPublication
+        + ", borrowing="
+        + borrowing
         + '}';
   }
 }

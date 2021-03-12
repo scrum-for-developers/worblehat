@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StandardBookService implements BookService {
 
-  public StandardBookService() {}
-
   @Autowired
   public StandardBookService(
       BorrowingRepository borrowingRepository, BookRepository bookRepository) {
@@ -52,7 +50,7 @@ public class StandardBookService implements BookService {
 
   @Override
   public Set<Book> findBooksByIsbn(String isbn) {
-    return bookRepository.findByIsbn(isbn); // null if not found
+    return bookRepository.findByIsbn(isbn);
   }
 
   @Override
@@ -74,6 +72,11 @@ public class StandardBookService implements BookService {
     if (!bookFromRepo.isPresent() || book.isSameCopy(bookFromRepo.get())) {
       return Optional.of(bookRepository.save(book));
     } else return Optional.empty();
+  }
+
+  @Override
+  public Book updateBook(Book aBook) {
+    return bookRepository.save(aBook);
   }
 
   @Override

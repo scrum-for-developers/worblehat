@@ -1,5 +1,6 @@
 package de.codecentric.psd.worblehat.domain;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -67,5 +68,15 @@ class BookTest {
     BOOK.borrowNowByBorrower("a@bc.de");
     BOOK.borrowNowByBorrower("a@bc.ru");
     assertThat(BOOK.getBorrowing().getBorrowerEmailAddress(), is("a@bc.de"));
+  }
+
+  @Test
+  void shouldReturnRelevatInfoInToString() {
+    String borrowingAsString = BOOK.toString();
+    assertThat(borrowingAsString, containsString("title"));
+    assertThat(borrowingAsString, containsString("author"));
+    assertThat(borrowingAsString, containsString("edition"));
+    assertThat(borrowingAsString, containsString("isbn"));
+    assertThat(borrowingAsString, containsString("yearOfPublication"));
   }
 }

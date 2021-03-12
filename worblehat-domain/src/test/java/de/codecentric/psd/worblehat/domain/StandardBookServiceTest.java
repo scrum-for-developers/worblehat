@@ -3,21 +3,24 @@ package de.codecentric.psd.worblehat.domain;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDate;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 
 class StandardBookServiceTest {
 
-  private BorrowingRepository borrowingRepository;
+  @Mock private BorrowingRepository borrowingRepository;
 
-  private BookRepository bookRepository;
+  @Mock private BookRepository bookRepository;
 
   private BookService bookService;
 
@@ -31,6 +34,8 @@ class StandardBookServiceTest {
 
   @BeforeEach
   void setup() {
+    initMocks(this);
+
     aBook = new Book("title", "author", "edition", "isbn", 2016);
     aCopyofBook = new Book("title", "author", "edition", "isbn", 2016);
     anotherBook = new Book("title2", "author2", "edition2", "isbn2", 2016);
@@ -47,9 +52,6 @@ class StandardBookServiceTest {
     anotherBorrowing = new Borrowing(anotherBorrowedBook, BORROWER_EMAIL, NOW);
     anotherBorrowedBook.borrowNowByBorrower(BORROWER_EMAIL);
 
-    bookRepository = mock(BookRepository.class);
-
-    borrowingRepository = mock(BorrowingRepository.class);
     when(borrowingRepository.findBorrowingsByBorrower(BORROWER_EMAIL))
         .thenReturn(Arrays.asList(aBorrowing, anotherBorrowing));
 
@@ -210,9 +212,22 @@ class StandardBookServiceTest {
   }
 
   @Test
+  void shouldFindAllCopiesOfABook() {
+    when(bookRepository.findByIsbn("isbn")).thenReturn(Set.of(aBook, aCopyofBook));
+    Set<Book> booksByIsbn = bookService.findBooksByIsbn("isbn");
+    assertThat(booksByIsbn, everyItem(hasProperty("isbn", is("isbn"))));
+  }
+
+  @Test
   void shouldDeleteAllBooksAndBorrowings() {
     bookService.deleteAllBooks();
     verify(bookRepository).deleteAll();
     verify(borrowingRepository).deleteAll();
+  }
+
+  @Test
+  void shouldSaveUpdatedBookToRepo() {
+    bookService.updateBook(aBook);
+    verify(bookRepository).save(aBook);
   }
 }
