@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/scrum-for-developers/worblehat.svg?branch=master)](https://travis-ci.org/scrum-for-developers/worblehat)
 
-Worblehat is a training application for the [Scrum for Developers](https://github.com/scrum-for-developers) training
-held by [codecentric AG](https://www.codecentric.de/).
+Worblehat is a Java Spring-Boot based Case Study for the [Applying Professional Scrum for Software Development](https://www.scrum.org/classes?uid=55) training
+held by [Andreas Ebbert-Karroum](https://www.scrum.org/andreas-ebbert-karroum) from [codecentric AG](https://www.codecentric.de/).
 
 ## Requirements
 * JDK 11+
