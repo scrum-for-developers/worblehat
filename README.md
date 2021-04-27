@@ -80,6 +80,7 @@ computer.
 
 If your build is taking too long, here are some strategies:
 * add a webhook from your git repository to jenkins, in order to trigger a build immedeately
+  * Add `http://<teamserver-IP>/jenkins/github-webhook/` as webhook to your GitHub Repository
 * try to reduce the amount of work in feature branches
 * try to do steps in parallel
 * try to reduce the amount of generated reports (maven-project-info-reports-plugin)
