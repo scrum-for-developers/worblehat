@@ -1,14 +1,18 @@
 pipeline {
-  agent none
+  agent any
   environment {
     SONAR_URL = 'http://localhost:9000/sonar'
     SITE_DEPLOY_PATH = '/scrumfordevelopers/nginx_root/worblehat-site'
   }
 
+  options {
+      preserveStashes(buildCount: 5)
+//      disableConcurrentBuilds()
+  }
+
   stages {
 
     stage('BUILD') {
-      agent any
 //      when {
 //        branch 'master'
 //      }
@@ -33,11 +37,11 @@ pipeline {
             resolverId: 'local-artifactory-resolver',
             deployerId: 'local-artifactory-deployer',
         )
+        stash name:'executable', includes:'**worblehat-web/target/*-executable.jar'
       }
     }
 
     stage('UNIT TEST') {
-      agent any
 //      when {
 //        branch 'master'
 //      }
@@ -52,7 +56,6 @@ pipeline {
     }
 
     stage('QUALITY') {
-        agent any
 //      when {
 //        branch 'master'
 //      }
@@ -66,7 +69,6 @@ pipeline {
 //        parallel {
 
             stage('REPORTING') {
-              agent any
               when {
                 branch 'master'
               }
@@ -77,7 +79,6 @@ pipeline {
             }
 
             stage('ACCEPTANCE TEST') {
-                agent any
                 //      when {
                 //        branch 'master'
                 //      }
@@ -113,27 +114,29 @@ pipeline {
 //    }
 
     stage('DEPLOY DEV') {
-        agent any
         when {
         branch 'master'
         }
         steps {
+            unstash name:'executable'
             sh "sudo /etc/init.d/worblehat-test stop"
             sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update -Pjenkins " +
                     "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_test " +
                     "-Dpsd.dbserver.username=worblehat " +
                     "-Dpsd.dbserver.password=worblehat"
 
-            sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
+            sh "cp ./worblehat-web/target/*-executable.jar /opt/worblehat-test/worblehat.jar"
             sh "sudo /etc/init.d/worblehat-test start"
         }
     }
 
 
     stage('PROD APPROVAL') {
-      agent none
       when {
         branch 'master'
+      }
+      options {
+          timeout(time: 5, unit: 'MINUTES')
       }
       steps {
         milestone(ordinal: 50, label: "PROD_APPROVAL_REACHED")
@@ -144,21 +147,27 @@ pipeline {
     }
 
     stage('DEPLOY PROD') {
-      agent any
       when {
         branch 'master'
       }
       steps {
         lock(resource: "PROD_ENV", label: null) {
+          unstash name:'executable'
           sh "sudo /etc/init.d/worblehat-prod stop"
           sh "./mvnw -B -f worblehat-domain/pom.xml liquibase:update " +
                   "-Dpsd.dbserver.url=jdbc:mysql://localhost:3306/worblehat_prod " +
                   "-Dpsd.dbserver.username=worblehat " +
                   "-Dpsd.dbserver.password=worblehat"
-          sh "cp ${env.WORKSPACE}/worblehat-web/target/*-executable.jar /opt/worblehat-prod/worblehat.jar"
+          sh "cp ./worblehat-web/target/*-executable.jar /opt/worblehat-prod/worblehat.jar"
           sh "sudo /etc/init.d/worblehat-prod start"
         }
       }
+    }
+  }
+  post {
+    cleanup {
+      echo 'Cleaning up'
+      deleteDir()
     }
   }
 }
