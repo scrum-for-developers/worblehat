@@ -1,37 +1,47 @@
 package de.codecentric.psd.worblehat.domain;
 
-import org.joda.time.DateTime;
-import org.junit.Test;
-
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-public class BorrowingTest {
+import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
-    private final static String BORROWER_EMAIL = "someone@codecentric.de";
+class BorrowingTest {
 
-    private final static DateTime BORROW_DATE = DateTime.now();
+  @Mock Book aBook;
+  private Borrowing borrowing;
 
-    private final static Book BORROW_BOOK =
-            new Book("title", "author", "edition", "ISBN", 2016);
+  @BeforeEach
+  void setUp() {
+    initMocks(this);
+    borrowing = new Borrowing(aBook, "user@domain.com");
+  }
 
-    private Borrowing createBorrowing() {
-        return new Borrowing(BORROW_BOOK, BORROWER_EMAIL, BORROW_DATE);
-    }
+  @Test
+  void shouldCreateNewBorrowingForToday() {
+    assertThat(borrowing.getBorrowDate(), is(LocalDate.now()));
+  }
 
-    @Test
-    public void testConstructorShouldTakeAllArguments() throws Exception {
-        Borrowing borrowing = createBorrowing();
-        assertNotNull(borrowing);
-    }
+  @Test
+  void shouldReturnBook() {
+    assertThat(borrowing.getBorrowedBook(), is(aBook));
+  }
 
-    @Test
-    public void testHasBorrowerEmail() throws Exception {
-        Borrowing borrowing = createBorrowing();
-        String borrowerEmail = borrowing.getBorrowerEmailAddress();
-        assertThat(borrowerEmail, is(BORROWER_EMAIL));
-    }
+  @Test
+  void shouldReturnBorrower() {
+    assertThat(borrowing.getBorrowerEmailAddress(), is("user@domain.com"));
+  }
 
-
+  @Test
+  void shouldReturnRelevatInfoInToString() {
+    String borrowingAsString = borrowing.toString();
+    assertThat(borrowingAsString, containsString("borrowerEmailAddress"));
+    assertThat(borrowingAsString, containsString("borrowDate"));
+    assertThat(borrowingAsString, containsString("user@domain.com"));
+  }
 }

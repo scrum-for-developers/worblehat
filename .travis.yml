@@ -1,7 +1,7 @@
 language: java
 sudo: false
+dist: bionic
 
 jdk:
-  - oraclejdk7
-  - oraclejdk8
+  - oraclejdk11
 

@@ -1,90 +1,109 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import de.codecentric.psd.worblehat.domain.Book;
-import de.codecentric.psd.worblehat.domain.BookAlreadyBorrowedException;
-import de.codecentric.psd.worblehat.domain.BookService;
-import de.codecentric.psd.worblehat.web.formdata.BookBorrowFormData;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-
-import javax.servlet.http.HttpServletRequest;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class BorrowBookControllerTest {
+import de.codecentric.psd.worblehat.domain.Book;
+import de.codecentric.psd.worblehat.domain.BookService;
+import de.codecentric.psd.worblehat.domain.Borrowing;
+import de.codecentric.psd.worblehat.web.formdata.BookBorrowFormData;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 
-    private BookService bookService;
+class BorrowBookControllerTest {
 
-    private  BorrowBookController borrowBookController;
+  private BookService bookService;
 
-    private BindingResult bindingResult;
+  private BorrowBookController borrowBookController;
 
-    private BookBorrowFormData bookBorrowFormData;
+  private BindingResult bindingResult;
 
-    private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
+  private BookBorrowFormData bookBorrowFormData;
 
-    public static final String BORROWER_EMAIL = "someone@codecentric.de";
+  private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
 
-    @Before
-    public void setUp() throws Exception {
-        bookService = mock(BookService.class);
-        bindingResult = mock(BindingResult.class);
-        bookBorrowFormData = mock(BookBorrowFormData.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
-        borrowBookController = new BorrowBookController(bookService);
-    }
+  public static final String BORROWER_EMAIL = "someone@codecentric.de";
 
-    @Test
-    public void shouldSetupForm() throws Exception {
-        ModelMap modelMap = mock(ModelMap.class);
-        borrowBookController.setupForm(modelMap);
-        verify(modelMap).put(eq("borrowFormData"), any(BookBorrowFormData.class));
-    }
+  @BeforeEach
+  void setUp() {
+    bookService = mock(BookService.class);
+    bindingResult = new MapBindingResult(new HashMap<>(), "");
+    bookBorrowFormData = new BookBorrowFormData();
+    borrowBookController = new BorrowBookController(bookService);
+  }
 
-    @Test
-    public void shouldNavigateToBorrowWhenResultHasErrors() throws Exception {
-        when(bindingResult.hasErrors()).thenReturn(true);
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
-        assertThat(navigateTo, is("borrow"));
-    }
+  @Test
+  void shouldSetupForm() {
+    ModelMap modelMap = new ModelMap();
 
-    @Test
-    public void shouldRejectBorrowingIfBookDoesNotExist() throws Exception {
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(null);
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
-        verify(bindingResult).rejectValue("isbn", "notBorrowable");
-        assertThat(navigateTo, is("borrow"));
-    }
+    borrowBookController.setupForm(modelMap);
 
-    @Test
-    public void shouldRejectAlreadyBorrowedBooks() throws Exception {
-        when(bookBorrowFormData.getEmail()).thenReturn(BORROWER_EMAIL);
-        when(bookBorrowFormData.getIsbn()).thenReturn(TEST_BOOK.getIsbn());
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(TEST_BOOK);
-        doThrow(BookAlreadyBorrowedException.class).when(bookService).borrowBook(TEST_BOOK, BORROWER_EMAIL);
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
-        verify(bindingResult).rejectValue("isbn", "internalError");
-        assertThat(navigateTo, is("borrow"));
-    }
+    assertThat(modelMap.get("borrowFormData"), is(not(nullValue())));
+  }
 
-    @Test
-    public void shouldNavigateHomeOnSuccess() throws Exception {
-        when(bookBorrowFormData.getEmail()).thenReturn(BORROWER_EMAIL);
-        when(bookBorrowFormData.getIsbn()).thenReturn(TEST_BOOK.getIsbn());
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(TEST_BOOK);
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
-        verify(bookService).borrowBook(TEST_BOOK, BORROWER_EMAIL);
-        assertThat(navigateTo, is("home"));
-    }
+  @Test
+  void shouldNavigateToBorrowWhenResultHasErrors() {
+    bindingResult.addError(new ObjectError("", ""));
 
-    @Test
-    public void shouldNavigateToHomeOnErrors() throws Exception {
-        String navigateTo = borrowBookController.handleErrors(mock(Exception.class), mock(HttpServletRequest.class));
-        assertThat(navigateTo, is("home"));
-    }
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+
+    assertThat(navigateTo, is("borrow"));
+  }
+
+  @Test
+  void shouldRejectBorrowingIfBookDoesNotExist() {
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(null);
+
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+
+    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
+    assertThat(navigateTo, is("borrow"));
+  }
+
+  @Test
+  void shouldRejectAlreadyBorrowedBooks() {
+    bookBorrowFormData.setEmail(BORROWER_EMAIL);
+    bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn()))
+        .thenReturn(Collections.singleton(TEST_BOOK));
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+
+    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
+    assertThat(bindingResult.getFieldError("isbn").getCode(), is("noBorrowableBooks"));
+    assertThat(navigateTo, is("borrow"));
+  }
+
+  @Test
+  void shouldNavigateHomeOnSuccess() {
+    bookBorrowFormData.setEmail(BORROWER_EMAIL);
+    bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn()))
+        .thenReturn(Collections.singleton(TEST_BOOK));
+    when(bookService.borrowBook(any(), any()))
+        .thenReturn(Optional.of(new Borrowing(TEST_BOOK, BORROWER_EMAIL)));
+
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+    verify(bookService).borrowBook(TEST_BOOK.getIsbn(), BORROWER_EMAIL);
+    assertThat(navigateTo, is("home"));
+  }
+
+  @Test
+  void shouldNavigateToHomeOnErrors() {
+    String navigateTo =
+        borrowBookController.handleErrors(new Exception(), new MockHttpServletRequest());
+
+    assertThat(navigateTo, is("home"));
+  }
 }

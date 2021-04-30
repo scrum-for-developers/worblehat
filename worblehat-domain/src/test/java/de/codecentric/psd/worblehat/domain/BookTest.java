@@ -1,124 +1,82 @@
 package de.codecentric.psd.worblehat.domain;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BookTest {
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-    private static final String TITLE = "title";
+class BookTest {
 
-    private static final String AUTHOR = "author";
+  Book BOOK;
 
-    private static final String EDITION = "2";
+  @BeforeEach
+  public void setup() {
+    BOOK = new Book("Titel", "Author", "2", "1", 1234);
+  }
 
-    private static final String ISBN = "isbn";
+  @Test
+  void shouldReturnFalseWhenAuthorisDifferent() {
+    Book anotherCopy =
+        new Book(
+            BOOK.getTitle(),
+            BOOK.getAuthor(),
+            BOOK.getEdition(),
+            BOOK.getIsbn(),
+            BOOK.getYearOfPublication());
+    anotherCopy.setAuthor("Bene");
+    assertThat(BOOK.isSameCopy(anotherCopy), is(false));
+  }
 
-    private static final int YEAR_OF_PUBLICATION = 2016;
-    private Book demoBook;
+  @Test
+  void shouldReturnFalseWhenTitleisDifferent() {
+    Book anotherCopy =
+        new Book(
+            BOOK.getTitle(),
+            BOOK.getAuthor(),
+            BOOK.getEdition(),
+            BOOK.getIsbn(),
+            BOOK.getYearOfPublication());
+    anotherCopy.setTitle("Lord of the Rings");
+    assertThat(BOOK.isSameCopy(anotherCopy), is(false));
+  }
 
-    private Book createDemoBook() {
-        return new Book(TITLE, AUTHOR, EDITION, ISBN, YEAR_OF_PUBLICATION);
-    }
+  @Test
+  void shouldReturnTrueWhenAllButTitleAndAuthorAreDifferent() {
+    Book anotherCopy =
+        new Book(
+            BOOK.getTitle(),
+            BOOK.getAuthor(),
+            BOOK.getEdition(),
+            BOOK.getIsbn(),
+            BOOK.getYearOfPublication());
+    anotherCopy.setEdition("2000");
+    anotherCopy.setIsbn("123456789X");
+    anotherCopy.setYearOfPublication(2010);
+    assertThat(BOOK.isSameCopy(anotherCopy), is(true));
+  }
 
-    @Before
-    public void setUp() throws Exception {
-        demoBook = createDemoBook();
-    }
+  @Test
+  void shouldBeBorrowable() {
+    BOOK.borrowNowByBorrower("a@bc.de");
+    assertThat(BOOK.getBorrowing().getBorrowerEmailAddress(), is("a@bc.de"));
+  }
 
-    @Test
-    public void testConstructorTakesAllArguments() throws Exception {
-        assertNotNull(demoBook);
-    }
+  @Test
+  void shouldIgnoreNewBorrowWhenBorrowed() {
+    BOOK.borrowNowByBorrower("a@bc.de");
+    BOOK.borrowNowByBorrower("a@bc.ru");
+    assertThat(BOOK.getBorrowing().getBorrowerEmailAddress(), is("a@bc.de"));
+  }
 
-    @Test
-    public void testBookHasTitle() throws Exception {
-        String title = demoBook.getTitle();
-        assertThat(title, is(TITLE));
-    }
-
-    @Test
-    public void testBookHasAuthor() throws Exception {
-        String author = demoBook.getAuthor();
-        assertThat(author, is(AUTHOR));
-    }
-
-    @Test
-    public void testBookHasEdition() throws Exception {
-        String edition = demoBook.getEdition();
-        assertThat(edition, is(EDITION));
-    }
-
-    @Test
-    public void testBookHasISBN() throws Exception {
-        String edition = demoBook.getIsbn();
-        assertThat(edition, is(ISBN));
-    }
-
-    @Test
-    public void testBookHasYearOfPublication() throws Exception {
-        int yearOfPublication = demoBook.getYearOfPublication();
-        assertThat(yearOfPublication, is(YEAR_OF_PUBLICATION));
-    }
-
-    @Test
-    public void shouldReturnEmptyStringIfBorrowerIsNull() throws Exception {
-        String borrower = demoBook.getBorrowerEmail();
-        assertThat(borrower, is(""));
-    }
-
-    @Test
-    public void shouldReturnBorrowerIsBorrowerIsSet() throws Exception {
-        String expectedBorrower = "someone@codecentric.de";
-        Borrowing borrowing = new Borrowing(demoBook, expectedBorrower, DateTime.now());
-        demoBook.setBorrowing(borrowing);
-        String actualBorrower = demoBook.getBorrowerEmail();
-        assertThat(actualBorrower, is(expectedBorrower));
-    }
-
-    @Test
-    public void shouldTakeTitle() throws Exception {
-        String expectedTitle = "A new Title";
-        demoBook.setTitle(expectedTitle);
-        String actualTitle = demoBook.getTitle();
-        assertThat(actualTitle, is(expectedTitle));
-    }
-
-    @Test
-    public void shouldTakeAuthor() throws Exception {
-        String expectedAuthor = "Someone I knew";
-        demoBook.setAuthor(expectedAuthor);
-        String actualAuthor = demoBook.getAuthor();
-        assertThat(actualAuthor, is(expectedAuthor));
-    }
-
-    @Test
-    public void shouldTakeISBN() throws Exception {
-        String expectedISBN = "12354545";
-        demoBook.setIsbn(expectedISBN);
-        String actualISBN = demoBook.getIsbn();
-        assertThat(actualISBN, is(expectedISBN));
-    }
-
-    @Test
-    public void shouldTakeEdition() throws Exception {
-        String expectedEdition = "1";
-        demoBook.setEdition(expectedEdition);
-        String actualEdition = demoBook.getEdition();
-        assertThat(actualEdition, is(expectedEdition));
-    }
-
-    @Test
-    public void shouldTakeYearOfPublication() throws Exception {
-        int expectedYearOfPublication = 2016;
-        demoBook.setYearOfPublication(expectedYearOfPublication);
-        int actualYearOfPublication = demoBook.getYearOfPublication();
-        assertThat(actualYearOfPublication, is(expectedYearOfPublication));
-    }
+  @Test
+  void shouldReturnRelevatInfoInToString() {
+    String borrowingAsString = BOOK.toString();
+    assertThat(borrowingAsString, containsString("title"));
+    assertThat(borrowingAsString, containsString("author"));
+    assertThat(borrowingAsString, containsString("edition"));
+    assertThat(borrowingAsString, containsString("isbn"));
+    assertThat(borrowingAsString, containsString("yearOfPublication"));
+  }
 }

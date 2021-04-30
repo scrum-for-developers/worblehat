@@ -1,78 +1,101 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import de.codecentric.psd.worblehat.domain.Book;
-import de.codecentric.psd.worblehat.domain.BookService;
-import de.codecentric.psd.worblehat.web.formdata.BookBorrowFormData;
-import de.codecentric.psd.worblehat.web.formdata.BookDataFormData;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import de.codecentric.psd.worblehat.domain.Book;
+import de.codecentric.psd.worblehat.domain.BookService;
+import de.codecentric.psd.worblehat.web.formdata.BookDataFormData;
+import java.util.HashMap;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 
-public class InsertBookControllerTest {
+class InsertBookControllerTest {
 
-    private InsertBookController insertBookController;
+  private InsertBookController insertBookController;
 
-    private BookService bookService;
+  private BookService bookService;
 
-    private BookDataFormData bookDataFormData;
+  private BookDataFormData bookDataFormData;
 
-    private BindingResult bindingResult;
+  private BindingResult bindingResult;
 
-    private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
+  private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
 
-    @Before
-    public void setUp() throws Exception {
-        bookService = mock(BookService.class);
-        insertBookController = new InsertBookController(bookService);
-        bookDataFormData = mock(BookDataFormData.class);
-        bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(false);
-    }
+  @BeforeEach
+  public void setUp() {
+    bookService = mock(BookService.class);
+    insertBookController = new InsertBookController(bookService);
+    bookDataFormData = new BookDataFormData();
+    bindingResult = new MapBindingResult(new HashMap<>(), "");
+  }
 
-    @Test
-    public void shouldSetupForm() throws Exception {
-        ModelMap modelMap = mock(ModelMap.class);
-        insertBookController.setupForm(modelMap);
-        verify(modelMap).put(eq("bookDataFormData"), any(BookDataFormData.class));
-    }
+  @Test
+  void shouldSetupForm() {
+    ModelMap modelMap = new ModelMap();
 
-    @Test
-    public void shouldRejectErrors() throws Exception {
-        when(bindingResult.hasErrors()).thenReturn(true);
-        String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
-        assertThat(navigateTo, is("insertBooks"));
-    }
+    insertBookController.setupForm(modelMap);
 
-    @Test
-    public void shouldRejectExistingBooks() throws Exception {
-        when(bookDataFormData.getIsbn()).thenReturn(TEST_BOOK.getIsbn());
-        when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(true);
-        String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
-        verify(bindingResult).rejectValue("isbn", "duplicateIsbn");
-        assertThat(navigateTo, is("insertBooks"));
-    }
+    assertThat(modelMap.get("bookDataFormData"), is(not(nullValue())));
+  }
 
-    @Test
-    public void shouldCreateBookAndNavigateToBookList() throws Exception {
-        when(bookDataFormData.getTitle()).thenReturn(TEST_BOOK.getTitle());
-        when(bookDataFormData.getAuthor()).thenReturn(TEST_BOOK.getAuthor());
-        when(bookDataFormData.getEdition()).thenReturn(TEST_BOOK.getEdition());
-        when(bookDataFormData.getIsbn()).thenReturn(TEST_BOOK.getIsbn());
-        when(bookDataFormData.getYearOfPublication()).thenReturn(String.valueOf(TEST_BOOK.getYearOfPublication()));
-        when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(false);
-        String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
-        verify(bookService).createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor(),
-                TEST_BOOK.getEdition(), TEST_BOOK.getIsbn(), TEST_BOOK.getYearOfPublication());
-        assertThat(navigateTo, is("redirect:bookList"));
-    }
+  @Test
+  void shouldRejectErrors() {
+    bindingResult.addError(new ObjectError("", ""));
+
+    String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
+
+    assertThat(navigateTo, is("insertBooks"));
+  }
+
+  @Test
+  void shouldCreateBookAndNavigateToBookList() {
+    setupFormData();
+    when(bookService.createBook(any(), any(), any(), any(), anyInt()))
+        .thenReturn(Optional.of(TEST_BOOK));
+
+    String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
+
+    verifyBookIsCreated();
+    assertThat(navigateTo, is("redirect:bookList"));
+  }
+
+  @Test
+  void shouldStayOnInsertBookPageWhenCreatingBookFails() {
+    setupFormData();
+    when(bookService.createBook(any(), any(), any(), any(), anyInt())).thenReturn(Optional.empty());
+
+    String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
+
+    verifyBookIsCreated();
+    assertThat(
+        bindingResult.getGlobalErrors(),
+        hasItem(hasProperty("codes", hasItemInArray("duplicateIsbn"))));
+    assertThat(navigateTo, is("insertBooks"));
+  }
+
+  private void verifyBookIsCreated() {
+    verify(bookService)
+        .createBook(
+            TEST_BOOK.getTitle(),
+            TEST_BOOK.getAuthor(),
+            TEST_BOOK.getEdition(),
+            TEST_BOOK.getIsbn(),
+            TEST_BOOK.getYearOfPublication());
+  }
+
+  private void setupFormData() {
+    bookDataFormData.setTitle(TEST_BOOK.getTitle());
+    bookDataFormData.setAuthor(TEST_BOOK.getAuthor());
+    bookDataFormData.setEdition(TEST_BOOK.getEdition());
+    bookDataFormData.setIsbn(TEST_BOOK.getIsbn());
+    bookDataFormData.setYearOfPublication(String.valueOf(TEST_BOOK.getYearOfPublication()));
+  }
 }

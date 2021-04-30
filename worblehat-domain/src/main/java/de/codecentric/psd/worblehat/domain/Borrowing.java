@@ -1,55 +1,64 @@
 package de.codecentric.psd.worblehat.domain;
 
-import org.joda.time.DateTime;
-
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import javax.persistence.*;
 
-/**
- * Borrowing Entity
- */
+/** Borrowing Entity */
 @Entity
 public class Borrowing implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id; // NOSONAR
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id; // NOSONAR
 
-	private String borrowerEmailAddress;
+  private String borrowerEmailAddress;
+  private LocalDate borrowDate;
+  @OneToOne() private Book borrowedBook;
 
-	@Temporal(TemporalType.DATE)
-	private Date borrowDate;
+  /**
+   * @param book The borrowed book
+   * @param borrowerEmailAddress The borrowers e-mail Address
+   * @param borrowDate The borrow date
+   */
+  public Borrowing(Book book, String borrowerEmailAddress, LocalDate borrowDate) {
+    super();
+    this.borrowedBook = book;
+    this.borrowerEmailAddress = borrowerEmailAddress;
+    this.borrowDate = borrowDate;
+  }
 
-	@OneToOne()
-	private Book borrowedBook;
+  public Borrowing(Book book, String borrowerEmailAddress) {
+    this(book, borrowerEmailAddress, LocalDate.now());
+  }
 
-	public String getBorrowerEmailAddress() {
-		return borrowerEmailAddress;
-	}
+  /** Empty constructor needed by Hibernate. */
+  private Borrowing() {
+    super();
+  }
 
-	/**
-	 * @param book
-	 * The borrowed book
-	 * @param borrowerEmailAddress
-	 * The borrowers e-mail Address
-	 * @param borrowDate
-	 * The borrow date
-     */
-	public Borrowing(Book book, String borrowerEmailAddress, DateTime borrowDate) {
-		super();
-		this.borrowedBook = book;
-		this.borrowerEmailAddress = borrowerEmailAddress;
-		this.borrowDate = borrowDate.toDate();
-	}
+  public LocalDate getBorrowDate() {
+    return borrowDate;
+  }
 
-	private Borrowing() {
-		// for JPA
-	}
+  public String getBorrowerEmailAddress() {
+    return borrowerEmailAddress;
+  }
 
-	public DateTime getBorrowDate() {
-		return new DateTime(borrowDate);
-	}
+  public Book getBorrowedBook() {
+    return borrowedBook;
+  }
+
+  @Override
+  public String toString() {
+    return "Borrowing{"
+        + "borrowerEmailAddress='"
+        + borrowerEmailAddress
+        + '\''
+        + ", borrowDate="
+        + borrowDate
+        + '}';
+  }
 }
