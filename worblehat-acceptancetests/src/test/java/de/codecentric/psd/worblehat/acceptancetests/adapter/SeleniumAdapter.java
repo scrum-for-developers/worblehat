@@ -43,7 +43,8 @@ public class SeleniumAdapter {
   @SuppressWarnings("rawtypes")
   public static BrowserWebDriverContainer chromeContainer =
       new BrowserWebDriverContainer<>()
-          .withCapabilities(new ChromeOptions())
+          .withCapabilities(
+              new ChromeOptions().addArguments("--no-sandbox", "--disable-dev-shm-usage"))
           .withRecordingMode(RECORD_ALL, new File("./target/"));
 
   // a class that extends thread that is to be called when program is exiting
