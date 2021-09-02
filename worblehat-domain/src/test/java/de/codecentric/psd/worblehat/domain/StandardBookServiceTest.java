@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -68,6 +69,8 @@ class StandardBookServiceTest {
       }
       bookCopies.get(book.getIsbn()).add(book);
     }
+    // in case save is called on the repository, it should return something meaningful instead of null
+    when(bookRepository.save(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
     for (Map.Entry<String, Set<Book>> entry : bookCopies.entrySet()) {
       when(bookRepository.findByIsbn(entry.getKey())).thenReturn(entry.getValue());
       when(bookRepository.findTopByIsbn(entry.getKey()))
