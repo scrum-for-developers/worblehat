@@ -13,6 +13,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        run-tc-cloud: [true, false]
+      
 
     steps:
     - uses: actions/checkout@v2
@@ -25,6 +30,7 @@ jobs:
     - name: Set up Testcontainers Cloud
       env: 
         TC_CLOUD_TOKEN: ${{ secrets.TC_CLOUD_TOKEN }}
+      if: ${{ matrix.run-tc-cloud }}      
       run: |
         curl -L -o agent https://app.testcontainers.cloud/download/testcontainers-cloud-agent_linux_x86-64
         chmod +x agent
