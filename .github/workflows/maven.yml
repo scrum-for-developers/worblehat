@@ -22,5 +22,15 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+    -name: Set up Testcontainers Cloud
+      run: curl -L -o agent https://app.testcontainers.cloud/download/testcontainers-cloud-agent_linux_x86-64 \
+           chmod +x agent \
+          ./agent & \
+          ./agent wait            
     - name: Build with Maven
       run: mvn -B verify --file pom.xml -P runITs
+      # fetch the latest TCC agent version and make it executable
+
+
+
+
