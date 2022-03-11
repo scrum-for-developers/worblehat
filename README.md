@@ -7,18 +7,20 @@ held by [Andreas Ebbert-Karroum](https://www.scrum.org/andreas-ebbert-karroum) f
 
 ## Requirements
 * JDK 11+
-* Docker
+* Docker / Podman
 
 Maven comes bundled with the maven wrapper scripts, no need for manual installation before.
 
 ## Running the application
 
 1. Compile and install the application in the local maven repository with `./mvnw install`
-1. Start the database. The easiest way is to fire up a docker container with  `worblehat-web/docker-db.sh`.
-1. Run the application.:
+2. Start the database:
+ * The easiest way is to fire up a docker container with `./worblehat-web/docker-db.sh`.
+ * **On Apple M1 Chips:** We switched from MySQL to MariaDB because it's a drop in replacement and in version 10.5 compatible with the new ARM Chips. Just execute `./worblehat-web/podman-db-on-m1.sh` (In addition podman is used instead of docker).
+3. Run the application.:
   * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
   * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`
-1. Access the application at <http://localhost:8080/worblehat/>
+4. Access the application at <http://localhost:8080/worblehat/>
 
 ## Running tests
 
