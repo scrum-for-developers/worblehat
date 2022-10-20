@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    strict = true,
     stepNotifications = true,
     plugin = {
       "pretty",
