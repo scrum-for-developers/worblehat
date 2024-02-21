@@ -7,19 +7,40 @@ held by [Andreas Ebbert-Karroum](https://www.scrum.org/andreas-ebbert-karroum) f
 
 ## Requirements
 * JDK 11+
-* Docker / Podman
+* Docker
 
 Maven comes bundled with the maven wrapper scripts, no need for manual installation before.
+
+### Docker on Macs
+Recommended Setup (regardless of CPU) that provides docker command line interface commands:
+```shell
+brew install docker
+brew install colima
+brew install jq
+```
+
+In order to be able to [use testcontainers](https://java.testcontainers.org/supported_docker_environment/#colima) later, it's necessary to start colima and export some environment variables.
+**This will be automatically handled in `./worblehat-web/docker-db.sh`!**
+```shell
+colima start --network-address
+export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+export TESTCONTAINERS_HOST_OVERRIDE=$(colima ls -j | jq -r '.address')
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+```
 
 ## Running the application
 
 1. Compile and install the application in the local maven repository with `./mvnw install`
 2. Start the database:
-  * The easiest way is to fire up a docker container with `./worblehat-web/docker-db.sh`.
-  * **On Apple M1 Chips:** We switched from MySQL to MariaDB because it's a drop in replacement and in version 10.5 compatible with the new ARM Chips. Just execute `./worblehat-web/podman-db-on-m1.sh` (In addition podman is used instead of docker).
+   * The easiest way is to fire up a docker container with `./worblehat-web/docker-db.sh`.
+   * If you run the database (MariaDB / MySQL) locally, use these parameters:
+     * Root password: `root`
+     * User: `worblehat`, Password: `worblehat`
+     * Database: `worblehat_test`
+     * Host & Port: `localhost:3306`
 3. Run the application.:
-  * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
-  * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`
+   * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
+   * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`
 4. Access the application at <http://localhost:8080/worblehat/>
 
 ## Running tests
@@ -32,7 +53,7 @@ maven lifecycle phases, are executed by differen maven plugins, and follow a dif
 1. Unit tests are run with `./mvnw test`
 1. The [maven-surefire-plugin](https://maven.apache.org/surefire/maven-surefire-plugin) includes
  [all these tests](https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#includes) by default:
- ```
+ ```xml
 <includes>
     <include>**/Test*.java</include>
     <include>**/*Test.java</include>
@@ -48,7 +69,7 @@ maven lifecycle phases, are executed by differen maven plugins, and follow a dif
    Note: The `verify` lifecycle is executed before `install`. Integration tests are only included, if the `runITs` profile is activated.
 1. The [maven-failsafe-plugin](https://maven.apache.org/surefire/maven-failsafe-plugin) includes
  [all these tests](https://maven.apache.org/surefire/maven-failsafe-plugin/integration-test-mojo.html#includes) by default:
- ```
+ ```xml
 <includes>
     <include>**/IT*.java</include>
     <include>**/*IT.java</include>
