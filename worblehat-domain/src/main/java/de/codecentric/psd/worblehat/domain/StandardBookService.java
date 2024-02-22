@@ -15,7 +15,7 @@ public class StandardBookService implements BookService {
 
   @Autowired
   public StandardBookService(
-      BorrowingRepository borrowingRepository, BookRepository bookRepository) {
+    BorrowingRepository borrowingRepository, BookRepository bookRepository) {
     this.borrowingRepository = borrowingRepository;
     this.bookRepository = bookRepository;
   }
@@ -27,7 +27,7 @@ public class StandardBookService implements BookService {
   @Override
   public void returnAllBooksByBorrower(String borrowerEmailAddress) {
     List<Borrowing> borrowingsByUser =
-        borrowingRepository.findBorrowingsByBorrower(borrowerEmailAddress);
+      borrowingRepository.findBorrowingsByBorrower(borrowerEmailAddress);
     for (Borrowing borrowing : borrowingsByUser) {
       borrowingRepository.delete(borrowing);
     }
@@ -38,14 +38,14 @@ public class StandardBookService implements BookService {
     Set<Book> books = bookRepository.findByIsbn(isbn);
 
     Optional<Book> unborrowedBook =
-        books.stream().filter(book -> book.getBorrowing() == null).findFirst();
+      books.stream().filter(book -> book.getBorrowing() == null).findFirst();
 
     return unborrowedBook.map(
-        book -> {
-          book.borrowNowByBorrower(borrower);
-          borrowingRepository.save(book.getBorrowing());
-          return book.getBorrowing();
-        });
+      book -> {
+        book.borrowNowByBorrower(borrower);
+        borrowingRepository.save(book.getBorrowing());
+        return book.getBorrowing();
+      });
   }
 
   @Override
@@ -60,11 +60,11 @@ public class StandardBookService implements BookService {
 
   @Override
   public Optional<Book> createBook(
-      @Nonnull String title,
-      @Nonnull String author,
-      @Nonnull String edition,
-      @Nonnull String isbn,
-      int yearOfPublication) {
+    @Nonnull String title,
+    @Nonnull String author,
+    @Nonnull String edition,
+    @Nonnull String isbn,
+    int yearOfPublication) {
     Book book = new Book(title, author, edition, isbn, yearOfPublication);
 
     Optional<Book> bookFromRepo = bookRepository.findTopByIsbn(isbn);
