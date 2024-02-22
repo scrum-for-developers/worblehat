@@ -1,8 +1,7 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.page;
 
 import static de.codecentric.psd.worblehat.acceptancetests.step.StepUtilities.doWithEach;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import de.codecentric.psd.worblehat.acceptancetests.adapter.SeleniumAdapter;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
@@ -56,7 +55,7 @@ public class BorrowBook {
           seleniumAdapter.typeIntoField("isbn", isbn);
           seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
           String errorMessage = seleniumAdapter.getTextFromElement(PageElement.ISBN_ERROR);
-          assertThat(errorMessage, is(message));
+          assertThat(errorMessage).isEqualTo(message);
         });
   }
 }

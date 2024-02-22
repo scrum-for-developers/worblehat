@@ -1,8 +1,7 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.page;
 
 import static de.codecentric.psd.worblehat.acceptancetests.step.StepUtilities.doWithEach;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import de.codecentric.psd.worblehat.acceptancetests.adapter.SeleniumAdapter;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.HtmlBook;
@@ -35,11 +34,11 @@ public class BookList {
     seleniumAdapter.gotoPage(Page.BOOKLIST);
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
     HtmlBook htmlBook = htmlBookList.getBookByIsbn(isbn);
-    assertThat(title, is(htmlBook.getTitle()));
-    assertThat(author, is(htmlBook.getAuthor()));
-    assertThat(year, is(htmlBook.getYearOfPublication()));
-    assertThat(edition, is(htmlBook.getEdition()));
-    assertThat(isbn, is(htmlBook.getIsbn()));
+    assertThat(title).isEqualTo(htmlBook.getTitle());
+    assertThat(author).isEqualTo(htmlBook.getAuthor());
+    assertThat(year).isEqualTo(htmlBook.getYearOfPublication());
+    assertThat(edition).isEqualTo(htmlBook.getEdition());
+    assertThat(isbn).isEqualTo(htmlBook.getIsbn());
   }
 
   @Then("the booklist shows that book with {string} as {string}")
@@ -50,16 +49,16 @@ public class BookList {
     HtmlBook htmlBook = htmlBookList.getBookByIsbn(isbn);
     switch (property) {
       case "title":
-        assertThat(htmlBook.getTitle(), is(value));
+        assertThat(htmlBook.getTitle()).isEqualTo(value);
         break;
       case "author":
-        assertThat(htmlBook.getAuthor(), is(value));
+        assertThat(htmlBook.getAuthor()).isEqualTo(value);
         break;
       case "year":
-        assertThat(htmlBook.getYearOfPublication(), is(value));
+        assertThat(htmlBook.getYearOfPublication()).isEqualTo(value);
         break;
       case "isbn":
-        assertThat(htmlBook.getIsbn(), is(value));
+        assertThat(htmlBook.getIsbn()).isEqualTo(value);
         break;
     }
   }
@@ -68,7 +67,7 @@ public class BookList {
   public void libraryIsEmpty() {
     seleniumAdapter.gotoPage(Page.BOOKLIST);
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
-    assertThat(htmlBookList.size(), is(0));
+    assertThat(htmlBookList.size()).isEqualTo(0);
   }
 
   @Then("the booklist lists {string} as borrower only for the book(s) with isbn(s) {string}")
@@ -79,7 +78,7 @@ public class BookList {
         isbns,
         (isbn) -> {
           HtmlBook htmlBook = htmlBookList.getBookByIsbn(isbn);
-          assertThat(htmlBook.getBorrower(), is(borrower));
+          assertThat(htmlBook.getBorrower()).isEqualTo(borrower);
         });
   }
 
@@ -89,8 +88,7 @@ public class BookList {
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
     doWithEach(
         isbns,
-        (isbn) ->
-            assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(isEmptyOrNullString())));
+        (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower()).isNullOrEmpty());
   }
 
   @Then("books {string} are still borrowed by borrower {string}")
@@ -98,6 +96,7 @@ public class BookList {
     seleniumAdapter.gotoPage(Page.BOOKLIST);
     HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
     doWithEach(
-        isbns, (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower(), is(borrower2)));
+        isbns,
+        (isbn) -> assertThat(htmlBookList.getBookByIsbn(isbn).getBorrower()).isEqualTo(borrower2));
   }
 }

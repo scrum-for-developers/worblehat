@@ -1,10 +1,7 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.business;
 
 import static de.codecentric.psd.worblehat.acceptancetests.step.StepUtilities.doWithEach;
-import static org.hamcrest.CoreMatchers.everyItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import de.codecentric.psd.worblehat.domain.Book;
 import de.codecentric.psd.worblehat.domain.BookService;
@@ -80,11 +77,11 @@ public class Library {
   // *****************
 
   @Then("the library contains {int} copies of the book with {string}")
-  public void shouldContainCopiesOfBook(Integer nrOfCopies, String isbn) {
+  public void shouldContainCopiesOfBook(int nrOfCopies, String isbn) {
     waitForServerResponse();
     Set<Book> books = bookService.findBooksByIsbn(isbn);
-    assertThat(books.size(), is(nrOfCopies));
-    assertThat(books, everyItem(hasProperty("isbn", is(isbn))));
+    assertThat(books).hasSize(nrOfCopies);
+    assertThat(books).extracting(Book::getIsbn).containsOnly(isbn);
   }
 
   private void waitForServerResponse() {

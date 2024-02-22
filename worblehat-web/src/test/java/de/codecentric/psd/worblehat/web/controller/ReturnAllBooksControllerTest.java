@@ -1,9 +1,6 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -41,7 +38,7 @@ class ReturnAllBooksControllerTest {
 
     returnAllBooksController.prepareView(modelMap);
 
-    assertThat(modelMap.get("returnAllBookFormData"), is(not(nullValue())));
+    assertThat(modelMap.get("returnAllBookFormData")).isNotNull();
   }
 
   @Test
@@ -51,7 +48,7 @@ class ReturnAllBooksControllerTest {
     String navigateTo =
         returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
 
-    assertThat(navigateTo, is("returnAllBooks"));
+    assertThat(navigateTo).isEqualTo("returnAllBooks");
   }
 
   @Test
@@ -63,6 +60,6 @@ class ReturnAllBooksControllerTest {
         returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
 
     verify(bookService).returnAllBooksByBorrower(borrower);
-    assertThat(navigateTo, is("home"));
+    assertThat(navigateTo).isEqualTo("home");
   }
 }
