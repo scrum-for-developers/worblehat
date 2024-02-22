@@ -1,9 +1,19 @@
 package de.codecentric.psd.worblehat.web.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
 import de.codecentric.psd.worblehat.domain.Book;
 import de.codecentric.psd.worblehat.domain.BookService;
 import de.codecentric.psd.worblehat.domain.Borrowing;
 import de.codecentric.psd.worblehat.web.formdata.BookBorrowFormData;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -12,95 +22,88 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
+class BorrowBookControllerTest {
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+  private BookService bookService;
 
-public class BorrowBookControllerTest {
+  private BorrowBookController borrowBookController;
 
-    private BookService bookService;
+  private BindingResult bindingResult;
 
-    private  BorrowBookController borrowBookController;
+  private BookBorrowFormData bookBorrowFormData;
 
-    private BindingResult bindingResult;
+  private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
 
-    private BookBorrowFormData bookBorrowFormData;
+  public static final String BORROWER_EMAIL = "someone@codecentric.de";
 
-    private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
+  @BeforeEach
+  void setUp() {
+    bookService = mock(BookService.class);
+    bindingResult = new MapBindingResult(new HashMap<>(), "");
+    bookBorrowFormData = new BookBorrowFormData();
+    borrowBookController = new BorrowBookController(bookService);
+  }
 
-    public static final String BORROWER_EMAIL = "someone@codecentric.de";
+  @Test
+  void shouldSetupForm() {
+    ModelMap modelMap = new ModelMap();
 
-    @BeforeEach
-    public void setUp() {
-        bookService = mock(BookService.class);
-        bindingResult = new MapBindingResult(new HashMap<>(), "");
-        bookBorrowFormData = new BookBorrowFormData();
-        borrowBookController = new BorrowBookController(bookService);
-    }
+    borrowBookController.setupForm(modelMap);
 
-    @Test
-    public void shouldSetupForm() {
-        ModelMap modelMap = new ModelMap();
+    assertThat(modelMap.get("borrowFormData"), is(not(nullValue())));
+  }
 
-        borrowBookController.setupForm(modelMap);
+  @Test
+  void shouldNavigateToBorrowWhenResultHasErrors() {
+    bindingResult.addError(new ObjectError("", ""));
 
-        assertThat(modelMap.get("borrowFormData"), is(not(nullValue())));
-    }
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-    @Test
-    public void shouldNavigateToBorrowWhenResultHasErrors() {
-        bindingResult.addError(new ObjectError("", ""));
+    assertThat(navigateTo, is("borrow"));
+  }
 
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+  @Test
+  void shouldRejectBorrowingIfBookDoesNotExist() {
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(null);
 
-        assertThat(navigateTo, is("borrow"));
-    }
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-    @Test
-    public void shouldRejectBorrowingIfBookDoesNotExist() {
-        when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(null);
+    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
+    assertThat(navigateTo, is("borrow"));
+  }
 
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+  @Test
+  void shouldRejectAlreadyBorrowedBooks() {
+    bookBorrowFormData.setEmail(BORROWER_EMAIL);
+    bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn()))
+        .thenReturn(Collections.singleton(TEST_BOOK));
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-        assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
-        assertThat(navigateTo, is("borrow"));
-    }
+    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
+    assertThat(bindingResult.getFieldError("isbn").getCode(), is("noBorrowableBooks"));
+    assertThat(navigateTo, is("borrow"));
+  }
 
-    @Test
-    public void shouldRejectAlreadyBorrowedBooks() {
-        bookBorrowFormData.setEmail(BORROWER_EMAIL);
-        bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
-        when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(Collections.singleton(TEST_BOOK));
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+  @Test
+  void shouldNavigateHomeOnSuccess() {
+    bookBorrowFormData.setEmail(BORROWER_EMAIL);
+    bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
+    when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn()))
+        .thenReturn(Collections.singleton(TEST_BOOK));
+    when(bookService.borrowBook(any(), any()))
+        .thenReturn(Optional.of(new Borrowing(TEST_BOOK, BORROWER_EMAIL)));
 
-        assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
-        assertThat(bindingResult.getFieldError("isbn").getCode(), is("noBorrowableBooks"));
-        assertThat(navigateTo, is("borrow"));
-    }
+    String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
+    verify(bookService).borrowBook(TEST_BOOK.getIsbn(), BORROWER_EMAIL);
+    assertThat(navigateTo, is("home"));
+  }
 
-    @Test
-    public void shouldNavigateHomeOnSuccess() {
-        bookBorrowFormData.setEmail(BORROWER_EMAIL);
-        bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
-        when(bookService.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(Collections.singleton(TEST_BOOK));
-        when(bookService.borrowBook(any(), any())).thenReturn(Optional.of(new Borrowing(TEST_BOOK, BORROWER_EMAIL)));
+  @Test
+  void shouldNavigateToHomeOnErrors() {
+    String navigateTo =
+        borrowBookController.handleErrors(new Exception(), new MockHttpServletRequest());
 
-        String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
-        verify(bookService).borrowBook(TEST_BOOK.getIsbn(), BORROWER_EMAIL);
-        assertThat(navigateTo, is("home"));
-    }
-
-    @Test
-    public void shouldNavigateToHomeOnErrors() {
-        String navigateTo = borrowBookController.handleErrors(new Exception(), new MockHttpServletRequest());
-
-        assertThat(navigateTo, is("home"));
-    }
+    assertThat(navigateTo, is("home"));
+  }
 }

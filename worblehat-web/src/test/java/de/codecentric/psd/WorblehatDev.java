@@ -5,30 +5,27 @@ import org.testcontainers.containers.MySQLContainer;
 
 public class WorblehatDev {
 
-    public static final String MYSQL_STARTED_PROP = "mysqlStarted";
+  public static final String MYSQL_STARTED_PROP = "mysqlStarted";
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        String postgresStarted = System.getProperty(MYSQL_STARTED_PROP);
-        if (postgresStarted == null) {
-            initMySQLContainer();
-            System.setProperty(MYSQL_STARTED_PROP, "true");
-        }
-
-        SpringApplication.run(Worblehat.class, args);
+    String mySqlStarted = System.getProperty(MYSQL_STARTED_PROP);
+    if (mySqlStarted == null) {
+      initMySQLContainer();
+      System.setProperty(MYSQL_STARTED_PROP, "true");
     }
 
-    private static void initMySQLContainer() {
-        MySQLContainer mySQLContainer = new MySQLContainer<>()
-                .withUsername("foo")
-                .withPassword("bar");
+    SpringApplication.run(Worblehat.class, args);
+  }
 
-                mySQLContainer.start();
+  private static void initMySQLContainer() {
+    MySQLContainer mySQLContainer = new MySQLContainer<>().withUsername("foo").withPassword("bar");
 
-        System.setProperty("spring.datasource.url", mySQLContainer.getJdbcUrl());
-        System.setProperty("spring.datasource.username", mySQLContainer.getUsername());
-        System.setProperty("spring.datasource.password", mySQLContainer.getPassword());
-        System.setProperty("spring.datasource.driver-class-name", "");
-    }
+    mySQLContainer.start();
 
+    System.setProperty("spring.datasource.url", mySQLContainer.getJdbcUrl());
+    System.setProperty("spring.datasource.username", mySQLContainer.getUsername());
+    System.setProperty("spring.datasource.password", mySQLContainer.getPassword());
+    System.setProperty("spring.datasource.driver-class-name", "");
+  }
 }

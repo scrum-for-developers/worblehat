@@ -5,4 +5,8 @@
 
 	<include file="de/codecentric/psd/worblehat/liquibase-changesets/version-1.0/001-initialize-db.sql" />
 	<include file="de/codecentric/psd/worblehat/liquibase-changesets/version-1.0/002-remove-unique-isbn-constraint.sql" />
+
+  <!-- add your changes to the database scheme below. Use the Liquibase annotated sql format
+   See: https://docs.liquibase.com/concepts/basic/sql-format.html
+   -->
 </databaseChangeLog>

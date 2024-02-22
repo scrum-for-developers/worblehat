@@ -1,16 +1,5 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import de.codecentric.psd.worblehat.domain.BookService;
-import de.codecentric.psd.worblehat.web.formdata.ReturnAllBooksFormData;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.MapBindingResult;
-import org.springframework.validation.ObjectError;
-
-import java.util.HashMap;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
@@ -18,50 +7,62 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class ReturnAllBooksControllerTest {
+import de.codecentric.psd.worblehat.domain.BookService;
+import de.codecentric.psd.worblehat.web.formdata.ReturnAllBooksFormData;
+import java.util.HashMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 
-    private ReturnAllBooksController returnAllBooksController;
+class ReturnAllBooksControllerTest {
 
-    private BookService bookService;
+  private ReturnAllBooksController returnAllBooksController;
 
-    private ReturnAllBooksFormData returnAllBooksFormData;
+  private BookService bookService;
 
-    private BindingResult bindingResult;
+  private ReturnAllBooksFormData returnAllBooksFormData;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        bookService = mock(BookService.class);
-        returnAllBooksController = new ReturnAllBooksController(bookService);
-        returnAllBooksFormData = new ReturnAllBooksFormData();
-        bindingResult = new MapBindingResult(new HashMap<>(), "");
-    }
+  private BindingResult bindingResult;
 
-    @Test
-    public void shouldSetupForm() throws Exception {
-        ModelMap modelMap = new ModelMap();
+  @BeforeEach
+  void setUp() throws Exception {
+    bookService = mock(BookService.class);
+    returnAllBooksController = new ReturnAllBooksController(bookService);
+    returnAllBooksFormData = new ReturnAllBooksFormData();
+    bindingResult = new MapBindingResult(new HashMap<>(), "");
+  }
 
-        returnAllBooksController.prepareView(modelMap);
+  @Test
+  void shouldSetupForm() throws Exception {
+    ModelMap modelMap = new ModelMap();
 
-        assertThat(modelMap.get("returnAllBookFormData"), is(not(nullValue())));
-    }
+    returnAllBooksController.prepareView(modelMap);
 
-    @Test
-    public void shouldRejectErrors() throws Exception {
-        bindingResult.addError(new ObjectError("", ""));
+    assertThat(modelMap.get("returnAllBookFormData"), is(not(nullValue())));
+  }
 
-        String navigateTo = returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
+  @Test
+  void shouldRejectErrors() throws Exception {
+    bindingResult.addError(new ObjectError("", ""));
 
-        assertThat(navigateTo, is("returnAllBooks"));
-    }
+    String navigateTo =
+        returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
 
-    @Test
-    public void shouldReturnAllBooksAndNavigateHome() throws Exception {
-        String borrower = "someone@codecentric.de";
-        returnAllBooksFormData.setEmailAddress(borrower);
+    assertThat(navigateTo, is("returnAllBooks"));
+  }
 
-        String navigateTo = returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
+  @Test
+  void shouldReturnAllBooksAndNavigateHome() throws Exception {
+    String borrower = "someone@codecentric.de";
+    returnAllBooksFormData.setEmailAddress(borrower);
 
-        verify(bookService).returnAllBooksByBorrower(borrower);
-        assertThat(navigateTo, is("home"));
-    }
+    String navigateTo =
+        returnAllBooksController.returnAllBooks(returnAllBooksFormData, bindingResult);
+
+    verify(bookService).returnAllBooksByBorrower(borrower);
+    assertThat(navigateTo, is("home"));
+  }
 }
