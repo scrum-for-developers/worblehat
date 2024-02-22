@@ -136,7 +136,7 @@ class StandardBookServiceTest {
   @Test
   void shouldCreateBook() {
     when(bookRepository.save(any(Book.class))).thenReturn(aBook);
-    bookService.createBook(
+    Optional<Book> createdBook = bookService.createBook(
         aBook.getTitle(),
         aBook.getAuthor(),
         aBook.getEdition(),
@@ -154,42 +154,78 @@ class StandardBookServiceTest {
     assertThat(bookArgumentCaptor.getValue().getIsbn(), is(aBook.getIsbn()));
     assertThat(
         bookArgumentCaptor.getValue().getYearOfPublication(), is(aBook.getYearOfPublication()));
+    assertThat(createdBook.isPresent(), is(true));
+    assertThat(createdBook.get().getTitle(), is(aBook.getTitle()));
+    assertThat(createdBook.get().getAuthor(), is(aBook.getAuthor()));
+    assertThat(createdBook.get().getEdition(), is(aBook.getEdition()));
+    assertThat(createdBook.get().getIsbn(), is(aBook.getIsbn()));
+    assertThat(createdBook.get().getYearOfPublication(), is(aBook.getYearOfPublication()));
   }
 
   @Test
   void shouldCreateAnotherCopyOfExistingBook() {
+    givenALibraryWith(aBook);
     when(bookRepository.save(any(Book.class))).thenReturn(aBook);
-    bookService.createBook(
+    Optional<Book> createdBook = bookService.createBook(
         aBook.getTitle(),
         aBook.getAuthor(),
         aBook.getEdition(),
         aBook.getIsbn(),
         aBook.getYearOfPublication());
     verify(bookRepository, times(1)).save(any(Book.class));
+    assertThat(createdBook.isPresent(), is(true));
+    assertThat(createdBook.get().getTitle(), is(aBook.getTitle()));
+    assertThat(createdBook.get().getAuthor(), is(aBook.getAuthor()));
+    assertThat(createdBook.get().getEdition(), is(aBook.getEdition()));
+    assertThat(createdBook.get().getIsbn(), is(aBook.getIsbn()));
+    assertThat(createdBook.get().getYearOfPublication(), is(aBook.getYearOfPublication()));
+  }
+
+  @Test
+  void shouldCreateAnotherCopyOfExistingBookPrintedInDifferentYear() {
+    givenALibraryWith(aBook);
+    int yearOfPublication = aBook.getYearOfPublication() + 1;
+    aCopyofBook.setYearOfPublication(yearOfPublication);
+    when(bookRepository.save(any(Book.class))).thenReturn(aCopyofBook);
+    Optional<Book> createdBook = bookService.createBook(
+      aCopyofBook.getTitle(),
+      aCopyofBook.getAuthor(),
+      aCopyofBook.getEdition(),
+      aCopyofBook.getIsbn(),
+      yearOfPublication);
+    verify(bookRepository, times(1)).save(any(Book.class));
+    assertThat(createdBook.isPresent(), is(true));
+    assertThat(createdBook.get().getTitle(), is(aCopyofBook.getTitle()));
+    assertThat(createdBook.get().getAuthor(), is(aCopyofBook.getAuthor()));
+    assertThat(createdBook.get().getEdition(), is(aCopyofBook.getEdition()));
+    assertThat(createdBook.get().getIsbn(), is(aCopyofBook.getIsbn()));
+    assertThat(createdBook.get().getYearOfPublication(), is(aCopyofBook.getYearOfPublication()));
   }
 
   @Test
   void shouldNotCreateAnotherCopyOfExistingBookWithDifferentTitle() {
     givenALibraryWith(aBook);
-    bookService.createBook(
+    Optional<Book> createdBook = bookService.createBook(
         aBook.getTitle() + "X",
         aBook.getAuthor(),
         aBook.getEdition(),
         aBook.getIsbn(),
         aBook.getYearOfPublication());
     verify(bookRepository, times(0)).save(any(Book.class));
+    assertThat(createdBook.isPresent(), is(false));
   }
 
   @Test
   void shouldNotCreateAnotherCopyOfExistingBookWithDifferentAuthor() {
     givenALibraryWith(aBook);
-    bookService.createBook(
+    Optional<Book> createdBook = bookService.createBook(
         aBook.getTitle(),
         aBook.getAuthor() + "X",
         aBook.getEdition(),
         aBook.getIsbn(),
         aBook.getYearOfPublication());
     verify(bookRepository, times(0)).save(any(Book.class));
+    assertThat(createdBook.isPresent(), is(false));
   }
 
   @Test
