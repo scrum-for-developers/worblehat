@@ -1,9 +1,6 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -50,7 +47,7 @@ class BorrowBookControllerTest {
 
     borrowBookController.setupForm(modelMap);
 
-    assertThat(modelMap.get("borrowFormData"), is(not(nullValue())));
+    assertThat(modelMap.get("borrowFormData")).isNotNull();
   }
 
   @Test
@@ -59,7 +56,7 @@ class BorrowBookControllerTest {
 
     String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-    assertThat(navigateTo, is("borrow"));
+    assertThat(navigateTo).isEqualTo("borrow");
   }
 
   @Test
@@ -68,8 +65,8 @@ class BorrowBookControllerTest {
 
     String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
-    assertThat(navigateTo, is("borrow"));
+    assertThat(bindingResult.hasFieldErrors("isbn")).isEqualTo(true);
+    assertThat(navigateTo).isEqualTo("borrow");
   }
 
   @Test
@@ -80,9 +77,9 @@ class BorrowBookControllerTest {
         .thenReturn(Collections.singleton(TEST_BOOK));
     String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
-    assertThat(bindingResult.hasFieldErrors("isbn"), is(true));
-    assertThat(bindingResult.getFieldError("isbn").getCode(), is("noBorrowableBooks"));
-    assertThat(navigateTo, is("borrow"));
+    assertThat(bindingResult.hasFieldErrors("isbn")).isEqualTo(true);
+    assertThat(bindingResult.getFieldError("isbn").getCode()).isEqualTo("noBorrowableBooks");
+    assertThat(navigateTo).isEqualTo("borrow");
   }
 
   @Test
@@ -96,7 +93,7 @@ class BorrowBookControllerTest {
 
     String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
     verify(bookService).borrowBook(TEST_BOOK.getIsbn(), BORROWER_EMAIL);
-    assertThat(navigateTo, is("home"));
+    assertThat(navigateTo).isEqualTo("home");
   }
 
   @Test
@@ -104,6 +101,6 @@ class BorrowBookControllerTest {
     String navigateTo =
         borrowBookController.handleErrors(new Exception(), new MockHttpServletRequest());
 
-    assertThat(navigateTo, is("home"));
+    assertThat(navigateTo).isEqualTo("home");
   }
 }

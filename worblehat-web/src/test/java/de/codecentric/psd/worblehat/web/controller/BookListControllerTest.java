@@ -1,7 +1,6 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +32,7 @@ class BookListControllerTest {
   @Test
   void shouldNavigateToBookList() throws Exception {
     String url = bookListController.setupForm(modelMap);
-    assertThat(url, is("bookList"));
+    assertThat(url).isEqualTo("bookList");
   }
 
   @Test
@@ -43,6 +42,6 @@ class BookListControllerTest {
     when(bookService.findAllBooks()).thenReturn(bookList);
     bookListController.setupForm(modelMap);
     List<Book> actualBooks = (List<Book>) modelMap.get("books");
-    assertThat(actualBooks, is(bookList));
+    assertThat(actualBooks).isEqualTo(bookList);
   }
 }
