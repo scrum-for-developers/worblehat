@@ -121,6 +121,22 @@ your browser will automatically refresh, and you don't even have to reload the p
 It is possible in IDEA and code to start the class `AcceptanceTestsIT` in debug mode, which enables you to
 set breakpoints in the step definitions. This might help to understand, why things are not working as expected.
 
+### Dependency Management
+
+You can consult the [versions plugin](https://www.mojohaus.org/versions/versions-maven-plugin) in order to either update
+dependencies automatically, or generate a list of dependencies that have newer versions.
+
+See [Advancing Dependency Versions](https://www.mojohaus.org/versions/versions-maven-plugin/examples/advancing-dependency-versions.html)
+on how the plugin can automatically update the `pom.xml` files. You could use:
+
+`./mvnw versions:use-latest-releases`
+
+See [Display Dependency Updates](https://www.mojohaus.org/versions/versions-maven-plugin/examples/display-dependency-updates.html)
+to learn how to get a list of dependencies that have newer releases available for you to review. You can update the
+`pom.xml` files accordingly manually. You could use:
+
+`./mvnw versions:display-dependency-updates -DprocessDependencyManagementTransitive=false -Dmaven.version.ignore=".*-alpha.*,.*-beta.*"`
+
 ## Howto Release
 
 ### Changelog

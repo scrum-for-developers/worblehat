@@ -1,7 +1,6 @@
 package de.codecentric.psd.worblehat.web.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import de.codecentric.psd.worblehat.domain.Book;
