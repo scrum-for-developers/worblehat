@@ -1,8 +1,6 @@
 package de.codecentric.psd.worblehat.web.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import de.codecentric.psd.worblehat.domain.Book;
@@ -30,7 +28,7 @@ class InsertBookControllerTest {
   private static final Book TEST_BOOK = new Book("title", "author", "edition", "isbn", 2016);
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     bookService = mock(BookService.class);
     insertBookController = new InsertBookController(bookService);
     bookDataFormData = new BookDataFormData();
@@ -43,7 +41,7 @@ class InsertBookControllerTest {
 
     insertBookController.setupForm(modelMap);
 
-    assertThat(modelMap.get("bookDataFormData"), is(not(nullValue())));
+    assertThat(modelMap.get("bookDataFormData")).isNotNull();
   }
 
   @Test
@@ -52,7 +50,7 @@ class InsertBookControllerTest {
 
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
 
-    assertThat(navigateTo, is("insertBooks"));
+    assertThat(navigateTo).isEqualTo("insertBooks");
   }
 
   @Test
@@ -64,7 +62,7 @@ class InsertBookControllerTest {
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
 
     verifyBookIsCreated();
-    assertThat(navigateTo, is("redirect:bookList"));
+    assertThat(navigateTo).isEqualTo("redirect:bookList");
   }
 
   @Test
@@ -75,10 +73,9 @@ class InsertBookControllerTest {
     String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
 
     verifyBookIsCreated();
-    assertThat(
-        bindingResult.getGlobalErrors(),
-        hasItem(hasProperty("codes", hasItemInArray("duplicateIsbn"))));
-    assertThat(navigateTo, is("insertBooks"));
+    assertThat(bindingResult.getGlobalErrors())
+        .anySatisfy(error -> assertThat(error.getCodes()).contains("duplicateIsbn"));
+    assertThat(navigateTo).isEqualTo("insertBooks");
   }
 
   private void verifyBookIsCreated() {

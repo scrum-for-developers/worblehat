@@ -1,10 +1,6 @@
 package de.codecentric.psd.worblehat.domain;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -91,15 +87,15 @@ class StandardBookServiceTest {
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
     verify(borrowingRepository).save(borrowingArgumentCaptor.capture());
-    assertThat(
-        borrowingArgumentCaptor.getValue().getBorrowerEmailAddress(), equalTo(BORROWER_EMAIL));
+    assertThat(borrowingArgumentCaptor.getValue().getBorrowerEmailAddress())
+        .isEqualTo(BORROWER_EMAIL);
   }
 
-  @Test()
+  @Test
   void shouldNotBorrowWhenBookAlreadyBorrowed() {
     givenALibraryWith(aBorrowedBook);
     Optional<Borrowing> borrowing = bookService.borrowBook(aBorrowedBook.getIsbn(), BORROWER_EMAIL);
-    assertTrue(!borrowing.isPresent());
+    assertThat(borrowing).isNotPresent();
   }
 
   @Test
@@ -108,10 +104,9 @@ class StandardBookServiceTest {
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
     verify(borrowingRepository).save(borrowingArgumentCaptor.capture());
-    assertThat(borrowingArgumentCaptor.getValue().getBorrowerEmailAddress(), is(BORROWER_EMAIL));
-    assertThat(
-        borrowingArgumentCaptor.getValue().getBorrowedBook(),
-        either(is(aBook)).or(is(aCopyofBook)));
+    assertThat(borrowingArgumentCaptor.getValue().getBorrowerEmailAddress())
+        .isEqualTo(BORROWER_EMAIL);
+    assertThat(borrowingArgumentCaptor.getValue().getBorrowedBook()).isIn(aBook, aCopyofBook);
   }
 
   @Test
@@ -120,8 +115,9 @@ class StandardBookServiceTest {
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     bookService.borrowBook(aBook.getIsbn(), BORROWER_EMAIL);
     verify(borrowingRepository).save(borrowingArgumentCaptor.capture());
-    assertThat(borrowingArgumentCaptor.getValue().getBorrowerEmailAddress(), is(BORROWER_EMAIL));
-    assertThat(borrowingArgumentCaptor.getValue().getBorrowedBook(), is(aBook));
+    assertThat(borrowingArgumentCaptor.getValue().getBorrowerEmailAddress())
+        .isEqualTo(BORROWER_EMAIL);
+    assertThat(borrowingArgumentCaptor.getValue().getBorrowedBook()).isEqualTo(aBook);
   }
 
   @Test
@@ -129,7 +125,7 @@ class StandardBookServiceTest {
     givenALibraryWith(aBorrowedBook, aCopyofBorrowedBook);
     ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
     Optional<Borrowing> borrowing = bookService.borrowBook(aBorrowedBook.getIsbn(), BORROWER_EMAIL);
-    assertThat(borrowing, isEmpty());
+    assertThat(borrowing).isEmpty();
     verify(borrowingRepository, never()).save(any(Borrowing.class));
   }
 
@@ -149,18 +145,18 @@ class StandardBookServiceTest {
     verify(bookRepository).save(bookArgumentCaptor.capture());
 
     // assert that the information was passed correctly to create the book
-    assertThat(bookArgumentCaptor.getValue().getTitle(), is(aBook.getTitle()));
-    assertThat(bookArgumentCaptor.getValue().getAuthor(), is(aBook.getAuthor()));
-    assertThat(bookArgumentCaptor.getValue().getEdition(), is(aBook.getEdition()));
-    assertThat(bookArgumentCaptor.getValue().getIsbn(), is(aBook.getIsbn()));
-    assertThat(
-        bookArgumentCaptor.getValue().getYearOfPublication(), is(aBook.getYearOfPublication()));
-    assertThat(createdBook.isPresent(), is(true));
-    assertThat(createdBook.get().getTitle(), is(aBook.getTitle()));
-    assertThat(createdBook.get().getAuthor(), is(aBook.getAuthor()));
-    assertThat(createdBook.get().getEdition(), is(aBook.getEdition()));
-    assertThat(createdBook.get().getIsbn(), is(aBook.getIsbn()));
-    assertThat(createdBook.get().getYearOfPublication(), is(aBook.getYearOfPublication()));
+    assertThat(bookArgumentCaptor.getValue().getTitle()).isEqualTo(aBook.getTitle());
+    assertThat(bookArgumentCaptor.getValue().getAuthor()).isEqualTo(aBook.getAuthor());
+    assertThat(bookArgumentCaptor.getValue().getEdition()).isEqualTo(aBook.getEdition());
+    assertThat(bookArgumentCaptor.getValue().getIsbn()).isEqualTo(aBook.getIsbn());
+    assertThat(bookArgumentCaptor.getValue().getYearOfPublication())
+        .isEqualTo(aBook.getYearOfPublication());
+    assertThat(createdBook).isPresent();
+    assertThat(createdBook.get().getTitle()).isEqualTo(aBook.getTitle());
+    assertThat(createdBook.get().getAuthor()).isEqualTo(aBook.getAuthor());
+    assertThat(createdBook.get().getEdition()).isEqualTo(aBook.getEdition());
+    assertThat(createdBook.get().getIsbn()).isEqualTo(aBook.getIsbn());
+    assertThat(createdBook.get().getYearOfPublication()).isEqualTo(aBook.getYearOfPublication());
   }
 
   @Test
@@ -175,12 +171,12 @@ class StandardBookServiceTest {
             aBook.getIsbn(),
             aBook.getYearOfPublication());
     verify(bookRepository, times(1)).save(any(Book.class));
-    assertThat(createdBook.isPresent(), is(true));
-    assertThat(createdBook.get().getTitle(), is(aBook.getTitle()));
-    assertThat(createdBook.get().getAuthor(), is(aBook.getAuthor()));
-    assertThat(createdBook.get().getEdition(), is(aBook.getEdition()));
-    assertThat(createdBook.get().getIsbn(), is(aBook.getIsbn()));
-    assertThat(createdBook.get().getYearOfPublication(), is(aBook.getYearOfPublication()));
+    assertThat(createdBook).isPresent();
+    assertThat(createdBook.get().getTitle()).isEqualTo(aBook.getTitle());
+    assertThat(createdBook.get().getAuthor()).isEqualTo(aBook.getAuthor());
+    assertThat(createdBook.get().getEdition()).isEqualTo(aBook.getEdition());
+    assertThat(createdBook.get().getIsbn()).isEqualTo(aBook.getIsbn());
+    assertThat(createdBook.get().getYearOfPublication()).isEqualTo(aBook.getYearOfPublication());
   }
 
   @Test
@@ -197,12 +193,13 @@ class StandardBookServiceTest {
             aCopyofBook.getIsbn(),
             yearOfPublication);
     verify(bookRepository, times(1)).save(any(Book.class));
-    assertThat(createdBook.isPresent(), is(true));
-    assertThat(createdBook.get().getTitle(), is(aCopyofBook.getTitle()));
-    assertThat(createdBook.get().getAuthor(), is(aCopyofBook.getAuthor()));
-    assertThat(createdBook.get().getEdition(), is(aCopyofBook.getEdition()));
-    assertThat(createdBook.get().getIsbn(), is(aCopyofBook.getIsbn()));
-    assertThat(createdBook.get().getYearOfPublication(), is(aCopyofBook.getYearOfPublication()));
+    assertThat(createdBook).isPresent();
+    assertThat(createdBook.get().getTitle()).isEqualTo(aCopyofBook.getTitle());
+    assertThat(createdBook.get().getAuthor()).isEqualTo(aCopyofBook.getAuthor());
+    assertThat(createdBook.get().getEdition()).isEqualTo(aCopyofBook.getEdition());
+    assertThat(createdBook.get().getIsbn()).isEqualTo(aCopyofBook.getIsbn());
+    assertThat(createdBook.get().getYearOfPublication())
+        .isEqualTo(aCopyofBook.getYearOfPublication());
   }
 
   @Test
@@ -216,7 +213,7 @@ class StandardBookServiceTest {
             aBook.getIsbn(),
             aBook.getYearOfPublication());
     verify(bookRepository, times(0)).save(any(Book.class));
-    assertThat(createdBook.isPresent(), is(false));
+    assertThat(createdBook).isNotPresent();
   }
 
   @Test
@@ -230,7 +227,7 @@ class StandardBookServiceTest {
             aBook.getIsbn(),
             aBook.getYearOfPublication());
     verify(bookRepository, times(0)).save(any(Book.class));
-    assertThat(createdBook.isPresent(), is(false));
+    assertThat(createdBook).isNotPresent();
   }
 
   @Test
@@ -239,28 +236,28 @@ class StandardBookServiceTest {
     expectedBooks.add(aBook);
     when(bookRepository.findAllByOrderByTitle()).thenReturn(expectedBooks);
     List<Book> actualBooks = bookService.findAllBooks();
-    assertThat(actualBooks, is(expectedBooks));
+    assertThat(actualBooks).isEqualTo(expectedBooks);
   }
 
   @Test
   void shouldVerifyExistingBooks() {
     when(bookRepository.findByIsbn(aBook.getIsbn())).thenReturn(Collections.singleton(aBook));
-    Boolean bookExists = bookService.bookExists(aBook.getIsbn());
-    assertTrue(bookExists);
+    boolean bookExists = bookService.bookExists(aBook.getIsbn());
+    assertThat(bookExists).isTrue();
   }
 
   @Test
   void shouldVerifyNonexistingBooks() {
     when(bookRepository.findByIsbn(aBook.getIsbn())).thenReturn(Collections.emptySet());
     Boolean bookExists = bookService.bookExists(aBook.getIsbn());
-    assertThat(bookExists, is(false));
+    assertThat(bookExists).isFalse();
   }
 
   @Test
   void shouldFindAllCopiesOfABook() {
     when(bookRepository.findByIsbn("isbn")).thenReturn(Set.of(aBook, aCopyofBook));
     Set<Book> booksByIsbn = bookService.findBooksByIsbn("isbn");
-    assertThat(booksByIsbn, everyItem(hasProperty("isbn", is("isbn"))));
+    assertThat(booksByIsbn).containsExactlyInAnyOrder(aBook, aCopyofBook);
   }
 
   @Test

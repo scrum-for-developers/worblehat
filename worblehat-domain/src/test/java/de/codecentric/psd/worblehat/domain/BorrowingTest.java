@@ -1,9 +1,6 @@
 package de.codecentric.psd.worblehat.domain;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.time.LocalDate;
@@ -24,24 +21,25 @@ class BorrowingTest {
 
   @Test
   void shouldCreateNewBorrowingForToday() {
-    assertThat(borrowing.getBorrowDate(), is(LocalDate.now()));
+    assertThat(borrowing.getBorrowDate()).isEqualTo(LocalDate.now());
   }
 
   @Test
   void shouldReturnBook() {
-    assertThat(borrowing.getBorrowedBook(), is(aBook));
+    assertThat(borrowing.getBorrowedBook()).isEqualTo(aBook);
   }
 
   @Test
   void shouldReturnBorrower() {
-    assertThat(borrowing.getBorrowerEmailAddress(), is("user@domain.com"));
+    assertThat(borrowing.getBorrowerEmailAddress()).isEqualTo("user@domain.com");
   }
 
   @Test
   void shouldReturnRelevatInfoInToString() {
     String borrowingAsString = borrowing.toString();
-    assertThat(borrowingAsString, containsString("borrowerEmailAddress"));
-    assertThat(borrowingAsString, containsString("borrowDate"));
-    assertThat(borrowingAsString, containsString("user@domain.com"));
+    assertThat(borrowingAsString)
+        .contains("borrowerEmailAddress")
+        .contains("borrowDate")
+        .contains("user@domain.com");
   }
 }

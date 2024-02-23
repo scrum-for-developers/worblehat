@@ -1,7 +1,6 @@
 package de.codecentric.psd.worblehat.acceptancetests.step.page;
 
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import de.codecentric.psd.worblehat.acceptancetests.adapter.SeleniumAdapter;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
@@ -71,7 +70,7 @@ public class InsertBook {
   @Then("the page contains error message for field {string}")
   public void pageContainsErrorMessage(String field) {
     String errorMessage = seleniumAdapter.getTextFromElement(PageElement.errorFor(field));
-    assertThat(errorMessage, notNullValue());
+    assertThat(errorMessage).isNotNull();
   }
   // *****************
   // *** U T I L *****
