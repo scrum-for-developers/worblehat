@@ -23,4 +23,6 @@ public interface BookService {
   List<Book> findAllBooks();
 
   Set<Book> findBooksByIsbn(String isbn);
+
+  long calculateFeeForBorrower(String borrowerEmail);
 }

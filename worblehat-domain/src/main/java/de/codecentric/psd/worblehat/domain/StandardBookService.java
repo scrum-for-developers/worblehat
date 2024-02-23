@@ -1,5 +1,6 @@
 package de.codecentric.psd.worblehat.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -7,6 +8,8 @@ import javax.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /** The domain service class for book operations. */
 @Service
@@ -90,4 +93,23 @@ public class StandardBookService implements BookService {
     borrowingRepository.deleteAll();
     bookRepository.deleteAll();
   }
+
+  @Override
+  public long calculateFeeForBorrower(String borrowerEmail) {
+    List<Borrowing> borrowings = borrowingRepository.findBorrowingsByBorrower(borrowerEmail);
+    long fee = 0;
+    for (Borrowing borrowing : borrowings){
+      long days = DAYS.between(borrowing.getBorrowDate(), LocalDate.now());
+      if (days > 28 && days <=35){
+        fee = 1;
+      } else if (days > 35 && days <= 42){
+        fee = 2;
+      } else if (days > 42){
+        long additionalWeeks = ((days - 1) / 7) - 5;
+        fee = 2 + (additionalWeeks * 3);
+      }
+    }
+    return fee;
+  }
+
 }
