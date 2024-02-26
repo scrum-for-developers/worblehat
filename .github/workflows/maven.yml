@@ -13,7 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    concurrency:
+      group: testcontainers-required
+      
     steps:
     - uses: actions/checkout@v4
     - name: Setup Java 11
@@ -28,7 +30,7 @@ jobs:
         token: ${{ secrets.TC_CLOUD_TOKEN }}
     - name: Build with Maven
       run: mvn -B verify --file pom.xml -P runITs
-
-
-
-
+    - name: Terminate Testcontainers Cloud Client active sessions
+      uses: atomicjar/testcontainers-cloud-setup-action@v1
+      with:
+        action: terminate
