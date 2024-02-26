@@ -1,7 +1,0 @@
-language: java
-sudo: false
-dist: bionic
-
-jdk:
-  - oraclejdk11
-
