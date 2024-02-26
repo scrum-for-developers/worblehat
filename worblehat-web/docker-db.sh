@@ -39,5 +39,5 @@ else
     --env MYSQL_PASSWORD=worblehat \
     --env MYSQL_DATABASE=worblehat_test \
     --publish 3306:3306 \
-    mariadb:11  >> /dev/null
+    mariadb:10  >> /dev/null
 fi
