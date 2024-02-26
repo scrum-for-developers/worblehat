@@ -1,8 +1,8 @@
 package de.codecentric.psd.worblehat.domain;
 
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.*;
 import java.io.Serializable;
-import javax.annotation.Nonnull;
-import javax.persistence.*;
 
 /** Entity implementation class for Entity: Book */
 @Entity

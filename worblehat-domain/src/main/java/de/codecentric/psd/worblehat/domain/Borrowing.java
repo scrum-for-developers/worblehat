@@ -1,8 +1,8 @@
 package de.codecentric.psd.worblehat.domain;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
 
 /** Borrowing Entity */
 @Entity
