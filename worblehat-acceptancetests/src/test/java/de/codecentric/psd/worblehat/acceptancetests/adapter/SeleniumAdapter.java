@@ -43,7 +43,6 @@ public class SeleniumAdapter {
   @SuppressWarnings("rawtypes")
   public static BrowserWebDriverContainer chromeContainer =
       new BrowserWebDriverContainer<>()
-          .withEnv("SE_OPTS", "--session-retry-interval 1")
           .withCapabilities(
               new ChromeOptions().addArguments("--no-sandbox", "--disable-dev-shm-usage"))
           .withRecordingMode(RECORD_ALL, new File("./target/"));
