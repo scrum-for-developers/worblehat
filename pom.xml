@@ -39,8 +39,8 @@
   <name>Worblehat Bookmanager Web-Application</name>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <psd.dbserver.url>jdbc:mysql://localhost/worblehat_test</psd.dbserver.url>
