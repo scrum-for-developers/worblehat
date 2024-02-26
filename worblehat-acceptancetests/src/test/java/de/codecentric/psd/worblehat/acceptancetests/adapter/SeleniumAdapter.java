@@ -77,8 +77,9 @@ public class SeleniumAdapter {
       chromeContainer.start();
       LOGGER.info("Connect to VNC via " + chromeContainer.getVncAddress());
       try {
-        Runtime.getRuntime().exec("open " + chromeContainer.getVncAddress());
+        Runtime.getRuntime().exec(new String[] {"open", chromeContainer.getVncAddress()});
       } catch (IOException e) {
+        e.printStackTrace();
         // silently fail, if it's not working – e.printStackTrace();
       }
     }
