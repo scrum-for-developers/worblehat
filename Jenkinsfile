@@ -30,7 +30,7 @@ pipeline {
             snapshotRepo: 'libs-snapshot-local'
         )
         rtMavenRun (
-            tool: 'apache-maven-3.6.3',
+            tool: 'apache-maven-3.9.6',
             pom: 'pom.xml',
             goals: '-DskipTests clean install',
             opts: '-Xms1024m -Xmx4096m',
