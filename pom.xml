@@ -35,6 +35,24 @@
     <module>worblehat-acceptancetests</module>
   </modules>
 
+  <distributionManagement>
+    <site>
+      <!--
+      The goal 'site:stage' requires a url.
+      The goal will deploy the generated site to this location.
+      see:
+      - https://maven.apache.org/plugins/maven-site-plugin/stage-mojo.html
+      - https://maven.apache.org/plugins/maven-site-plugin/usage.html
+
+      Jenkins will define a SITE_DEPLOY_PATH environment variable. The default value:
+      /scrumfordevelopers/nginx_root/worblehat-site
+
+      http://<team-ip>/jenkins/manage/configure
+       -->
+      <url>file:${env.SITE_DEPLOY_PATH}/site/worblehat-build/</url>
+    </site>
+  </distributionManagement>
+
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
