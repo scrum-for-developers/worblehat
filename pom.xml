@@ -239,19 +239,6 @@
       </properties>
     </profile>
     <profile>
-      <id>jenkins</id>
-      <properties>
-        <!-- On the team server, the sonar server is usually located at http://<team-ip>/sonar/
-        The sonar plugin defaults http://localhost:9000 so this needs to be changed.
-        The global jenkins configuration will define a SONAL_URL environment variable:
-        http://<team-ip>/jenkins/configure
-
-        see: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Maven
-        -->
-        <sonar.host.url>${env.SONAR_URL}</sonar.host.url>
-      </properties>
-    </profile>
-    <profile>
       <id>coverage</id>
       <build>
         <plugins>

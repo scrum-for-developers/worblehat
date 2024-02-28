@@ -60,7 +60,9 @@ pipeline {
 //        branch 'master'
 //      }
         steps {
-        sh './mvnw -B sonar:sonar -Pjenkins'
+          withSonarQubeEnv(installationName: 'sonarqube') {
+            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+          }
         }
     }
 
