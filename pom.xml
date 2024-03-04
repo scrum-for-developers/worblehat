@@ -50,6 +50,7 @@
       http://<team-ip>/jenkins/manage/configure
        -->
       <id>psd-teamserver</id>
+      <!--suppress UnresolvedMavenProperty -->
       <url>file:${env.SITE_DEPLOY_PATH}/site/worblehat-build/</url>
     </site>
   </distributionManagement>
