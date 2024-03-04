@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
     stepNotifications = true,
     plugin = {
       "pretty",
-      "html:target/cucumber.html",
+      "html:target/cucumber/index.html",
       "junit:target/cucumber.xml",
       "json:target/cucumber-report.json"
     })
