@@ -99,7 +99,7 @@ pipeline {
 
                 post {
                     always {
-                        archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
+//                        archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.flv', fingerprint: true
                         cucumber buildStatus: 'FAILURE',
                             failedFeaturesNumber: 1,
                             failedScenariosNumber: 1,
