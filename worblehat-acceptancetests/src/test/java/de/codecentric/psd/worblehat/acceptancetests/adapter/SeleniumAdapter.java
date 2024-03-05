@@ -38,6 +38,7 @@ public class SeleniumAdapter {
 
   @AfterAll
   public static void tearDown() {
+    //noinspection unchecked
     chromeContainer.afterTest(
         new TestDescription() {
           @Override
