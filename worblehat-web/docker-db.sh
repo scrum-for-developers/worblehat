@@ -7,10 +7,16 @@ if [ "$OS" == "Darwin" ]; then
   if ! colima status > /dev/null 2>&1; then
     echo "Starting colima..."
     colima start --network-address
-    export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
-    export TESTCONTAINERS_HOST_OVERRIDE=$(colima ls -j | jq -r '.address')
-    export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
   fi
+  # Check if either of the variables is not set
+  if [[ -z "${TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE}" || -z "${TESTCONTAINERS_HOST_OVERRIDE}" || -z "${DOCKER_HOST}" ]]; then
+    echo "Please set the required environment variables: TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE, TESTCONTAINERS_HOST_OVERRIDE and DOCKER_HOST"
+    echo export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+    echo export TESTCONTAINERS_HOST_OVERRIDE=$(colima ls -j | jq -r '.address')
+    echo export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+    exit 1
+  fi
+
 elif [ "$OS" == "Linux" ]; then
   # On Linux, docker should be managed differently (assuming it's already handled)
   echo "Assuming Docker is already handled on Linux"

@@ -20,7 +20,6 @@ brew install jq
 ```
 
 In order to be able to [use testcontainers](https://java.testcontainers.org/supported_docker_environment/#colima) later, it's necessary to start colima and export some environment variables.
-**This will be automatically handled in `./worblehat-web/docker-db.sh`!**
 ```shell
 colima start --network-address
 export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
