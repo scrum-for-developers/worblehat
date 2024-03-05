@@ -6,11 +6,10 @@ import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.HtmlBookList
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.PageElement;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,56 +21,51 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
+import org.testcontainers.containers.VncRecordingContainer;
 import org.testcontainers.lifecycle.TestDescription;
 
 /** Itegrates Selenium into the tests. */
 public class SeleniumAdapter {
 
-  @LocalServerPort private int port;
-
   private static final Logger LOGGER = LoggerFactory.getLogger(SeleniumAdapter.class);
 
-  private WebDriver driver;
+  @SuppressWarnings("rawtypes")
+  public static BrowserWebDriverContainer chromeContainer;
 
+  @LocalServerPort private int port;
+  private WebDriver driver;
   private String folderName;
+
+  @AfterAll
+  public static void tearDown() {
+    chromeContainer.afterTest(
+        new TestDescription() {
+          @Override
+          public String getTestId() {
+            return "ID";
+          }
+
+          @Override
+          public String getFilesystemFriendlyName() {
+            return "Worblehat-AcceptanceTests";
+          }
+        },
+        Optional.empty());
+  }
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
   }
 
-  //    @ClassRule - not supported by Cucumber at this point
-  @SuppressWarnings("rawtypes")
-  public static BrowserWebDriverContainer chromeContainer =
-      new BrowserWebDriverContainer<>()
-          .withCapabilities(
-              new ChromeOptions().addArguments("--no-sandbox", "--disable-dev-shm-usage"))
-          .withRecordingMode(RECORD_ALL, new File("./target/"));
-
-  // a class that extends thread that is to be called when program is exiting
-  static final Thread afterAllThread =
-      new Thread() {
-
-        public void run() {
-          chromeContainer.afterTest(
-              new TestDescription() {
-                @Override
-                public String getTestId() {
-                  return "ID";
-                }
-
-                @Override
-                public String getFilesystemFriendlyName() {
-                  return "Worblehat-AcceptanceTests";
-                }
-              },
-              Optional.empty());
-        }
-      };
-
   @Before
   public void setup() {
-    if (!chromeContainer.isRunning()) {
-      Runtime.getRuntime().addShutdownHook(afterAllThread);
+    if (chromeContainer == null || !chromeContainer.isRunning()) {
+      chromeContainer =
+          new BrowserWebDriverContainer<>()
+              .withCapabilities(
+                  new ChromeOptions().addArguments("--no-sandbox", "--disable-dev-shm-usage"))
+              .withRecordingMode(
+                  RECORD_ALL, new File("./target/"), VncRecordingContainer.VncRecordingFormat.MP4);
       Testcontainers.exposeHostPorts(80, 8080, 9100, 9101, port);
       chromeContainer.start();
       LOGGER.info("Connect to VNC via " + chromeContainer.getVncAddress());
@@ -83,14 +77,6 @@ public class SeleniumAdapter {
       }
     }
     setDriver(chromeContainer.getWebDriver());
-  }
-
-  @Before
-  public void initSelenium() {
-    folderName =
-        LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).concat(File.separator);
-    folderName = "target" + File.separator + "screenshots" + File.separator + folderName;
-    new File(folderName).mkdirs();
   }
 
   public void gotoPage(Page page) {
