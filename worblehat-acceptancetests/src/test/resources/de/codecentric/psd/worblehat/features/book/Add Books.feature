@@ -36,10 +36,10 @@ Feature: Adding a new book to the library
 
         Examples:
 
-            | title    | author          | edition | year | isbn       | author2                | title2               | nr |
-            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | Terry Pratchett        | Sourcery             | 2  |
-            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | XX_DIFFERENT_AUTHOR_XX | Sourcery             | 1  |
-            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | Terry Pratchett        | XX_DIFERENT_TITLE_XX | 1  |
+            | title    | author          | edition | year | isbn       | author2                | title2                | nr |
+            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | Terry Pratchett        | Sourcery              | 2  |
+            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | XX_DIFFERENT_AUTHOR_XX | Sourcery              | 1  |
+            | Sourcery | Terry Pratchett | 1       | 1989 | 0552131075 | Terry Pratchett        | XX_DIFFERENT_TITLE_XX | 1  |
 
 
 
