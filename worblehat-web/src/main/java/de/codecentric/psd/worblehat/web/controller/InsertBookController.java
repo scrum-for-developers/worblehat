@@ -48,11 +48,7 @@ public class InsertBookController {
               bookDataFormData.getIsbn(),
               Integer.parseInt(bookDataFormData.getYearOfPublication()));
       if (book.isPresent()) {
-        Book newBook = book.get();
-        // === HINT ===
-        // you can modify the book or set new properties here
-        bookService.updateBook(newBook);
-        LOG.info("new book instance is created: {}", newBook);
+        methodWithABetterName(book, false);
       } else {
         LOG.debug("failed to create new book with: {}", bookDataFormData);
         result.reject("duplicateIsbn");
@@ -60,5 +56,13 @@ public class InsertBookController {
       }
       return "redirect:bookList";
     }
+  }
+
+  private void methodWithABetterName(Optional<Book> book, boolean important) {
+    Book newBook = book.get();
+    // === HINT ===
+    // you can modify the book or set new properties here
+    bookService.updateBook(newBook);
+    LOG.info("new book instance is created: {}", newBook);
   }
 }
