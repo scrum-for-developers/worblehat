@@ -103,6 +103,10 @@ public class Book implements Serializable {
     return borrowing;
   }
 
+  public void setBorrowing(Borrowing borrowing) {
+    this.borrowing = borrowing;
+  }
+
   boolean isSameCopy(@Nonnull Book book) {
     return getTitle().equals(book.title) && getAuthor().equals(book.author);
   }
@@ -134,4 +138,9 @@ public class Book implements Serializable {
         + borrowing
         + '}';
   }
+
+  public long getId() {
+    return id;
+  }
+
 }

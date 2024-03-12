@@ -51,6 +51,10 @@ public class Borrowing implements Serializable {
     return borrowedBook;
   }
 
+  public LocalDate getDueDate() {
+    return borrowDate.plusDays(28);
+  }
+
   @Override
   public String toString() {
     return "Borrowing{"

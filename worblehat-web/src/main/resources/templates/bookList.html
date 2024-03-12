@@ -19,7 +19,7 @@
   </thead>
   <tbody>
   <tr th:each="book : ${books}">
-    <th th:text="${book.isbn}" scope="row">123456</th>
+    <th th:text="${book.isbn}" th:id="${book.id}" scope="row">123456</th>
     <td th:text="${book.title}">Harry Potter</td>
     <td th:text="${book.author}">J.K. Rowling</td>
     <td th:text="${book.yearOfPublication}">2002</td>

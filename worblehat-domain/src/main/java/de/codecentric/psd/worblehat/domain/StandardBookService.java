@@ -54,6 +54,16 @@ public class StandardBookService implements BookService {
   }
 
   @Override
+  public Optional<Book> getBookById(long id) {
+    return bookRepository.findById(id);
+  }
+
+  @Override
+  public List<Borrowing> findAllBorrowingsByEmailAddress(String emailAddress) {
+    return borrowingRepository.findByBorrowerEmailAddressOrderByBorrowDateAsc(emailAddress);
+  }
+
+  @Override
   public List<Book> findAllBooks() {
     return bookRepository.findAllByOrderByTitle();
   }

@@ -26,6 +26,9 @@ public class HtmlBookList {
       HtmlBook book = new HtmlBook();
       int currentColumn = 0;
       for (WebElement column : headers) {
+        if (column.getTagName() == "tr") {
+          book.setId(Long.parseLong(cells.get(0).getAttribute("id")));
+        }
         switch (column.getText()) {
             // .getAttribute("textContent") preserves eventually existing whitespace while
             // .getText() does not

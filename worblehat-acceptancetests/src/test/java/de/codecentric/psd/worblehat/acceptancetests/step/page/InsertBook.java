@@ -34,7 +34,7 @@ public class InsertBook {
   @When("a librarian adds a/another book with {string}, {string}, {int}, {string} and {string}")
   public void whenABookWithISBNisbnIsAdded(
       String title, String author, int edition, String year, String isbn) {
-    seleniumAdapter.gotoPage(Page.INSERTBOOKS);
+    seleniumAdapter.gotoPage(Page.INSERT_BOOK);
     fillInsertBookForm(title, author, edition, isbn, year);
     seleniumAdapter.clickOnPageElement(PageElement.ADDBOOKBUTTON);
     context.put("LAST_INSERTED_BOOK_ISBN", isbn);
@@ -42,7 +42,7 @@ public class InsertBook {
 
   @When("a librarian adds a random book and the {string} of that book is {string}")
   public void addRandomBookWithProperty(String property, String value) {
-    seleniumAdapter.gotoPage(Page.INSERTBOOKS);
+    seleniumAdapter.gotoPage(Page.INSERT_BOOK);
     DemoBookFactory randomBookBuilder = DemoBookFactory.createDemoBook();
     switch (property) {
       case "title":

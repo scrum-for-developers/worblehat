@@ -32,7 +32,7 @@ public class BorrowBook {
     doWithEach(
         isbns,
         (isbn) -> {
-          seleniumAdapter.gotoPage(Page.BORROWBOOK);
+          seleniumAdapter.gotoPage(Page.BORROW_BOOK);
           seleniumAdapter.typeIntoField("email", user);
           seleniumAdapter.typeIntoField("isbn", isbn);
           seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
@@ -50,7 +50,7 @@ public class BorrowBook {
     doWithEach(
         isbns,
         (isbn) -> {
-          seleniumAdapter.gotoPage(Page.BORROWBOOK);
+          seleniumAdapter.gotoPage(Page.BORROW_BOOK);
           seleniumAdapter.typeIntoField("email", borrower);
           seleniumAdapter.typeIntoField("isbn", isbn);
           seleniumAdapter.clickOnPageElement(PageElement.BORROWBOOKBUTTON);
