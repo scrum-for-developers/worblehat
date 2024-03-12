@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
   <include file="liquibase-changesets/001-initialize-db.sql"/>
   <include file="liquibase-changesets/002-remove-unique-isbn-constraint.sql"/>
-  <include file="liquibase-changesets/003-more-books.sql"/>
+  <include file="liquibase-changesets/003-more-books.sql" context="dev"/>
 
   <!-- add your changes to the database scheme below. Use the Liquibase annotated sql format
    See: https://docs.liquibase.com/concepts/basic/sql-format.html

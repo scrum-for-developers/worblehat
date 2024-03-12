@@ -22,7 +22,7 @@ CREATE TABLE borrowing(
     ON DELETE CASCADE
 );
 
---changeset betaworblers:insert_demo_data
+--changeset betaworblers:insert_demo_data context:dev
 INSERT INTO book(title, author, edition, isbn, year_of_publication)
 VALUES
   ("Harry Potter and the Philisopher's Stone", "J.K. Rowling", "1", "0747532699", 1997),
