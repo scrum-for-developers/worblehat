@@ -38,8 +38,8 @@ export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
      * Database: `worblehat_test`
      * Host & Port: `localhost:3306`
 3. Run the application.:
-   * Either run `./mvnw -pl worblehat-web spring-boot:run` (will automatically compile & package the application before)
-   * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`
+   * Either run `./mvnw -pl worblehat-web spring-boot:run -Dspring.profiles.active=dev` (will automatically compile & package the application before)
+   * Or use your IDE to start the main class in worblehat-web: `de.codecentric.psd.Worblehat`. Make sure to add this argument, so that Worblehat starts in dev-mode: `--spring.profiles.active=dev`
 4. Access the application at <http://localhost:8080/worblehat/>
 
 ## Running tests

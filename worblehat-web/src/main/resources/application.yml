@@ -1,0 +1,33 @@
+# Spring WebApp Config
+server:
+  servlet:
+    context-path: /worblehat
+
+# Database Config
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/worblehat_test # Assuming you have a separate DB for dev
+    username: worblehat
+    password: worblehat
+  application:
+    name: '@pom.name@'
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  thymeleaf:
+    cache: true
+  liquibase:
+    contexts: prod # we're not in dev - no test data!
+    drop-first: false # keep existing customer data in databse
+    change-log: classpath:master.xml
+
+# Hint: Placeholders like @pom.version@ will be replaced during the Maven build process
+info:
+  version: '@pom.version@'
+  stage: local
+
+# Logging configuration
+logging:
+  file:
+    name: /tmp/@pom.artifactId@.log
+

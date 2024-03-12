@@ -1,0 +1,20 @@
+# Override configurations for development environment if needed
+# Active Spring profiles
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # Database related overrides for the dev environment
+  datasource:
+    url: jdbc:mysql://localhost:3306/worblehat_test # Assuming you have a separate DB for dev
+    username: worblehat
+    password: worblehat
+
+  # Liquibase specific settings for dev environment
+  liquibase:
+    contexts: dev # used to populate test data in liquibase changesets
+    drop-first: true # for testing purposes, start with a clean db on every run
+
+  thymeleaf:
+    cache: false # reload templates every time
