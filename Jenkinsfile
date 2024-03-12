@@ -100,6 +100,7 @@ pipeline {
                 post {
                     always {
                         archiveArtifacts artifacts: 'worblehat-acceptancetests/target/*.mp4', fingerprint: true
+                        archiveArtifacts artifacts: 'worblehat-acceptancetests/target/screenshots/*.png', fingerprint: true
                         cucumber buildStatus: 'FAILURE',
                             failedFeaturesNumber: 1,
                             failedScenariosNumber: 1,
