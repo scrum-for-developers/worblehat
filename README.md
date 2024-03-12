@@ -6,7 +6,7 @@ Worblehat is a Java Spring-Boot based Case Study for the [Applying Professional 
 held by [Andreas Ebbert-Karroum](https://www.scrum.org/andreas-ebbert-karroum) from [codecentric AG](https://www.codecentric.de/).
 
 ## Requirements
-* JDK 17+
+* JDK 21+
 * Docker
 
 Maven comes bundled with the maven wrapper scripts, no need for manual installation before.

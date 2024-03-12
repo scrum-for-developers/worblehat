@@ -6,7 +6,6 @@ import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.HtmlBookList
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.Page;
 import de.codecentric.psd.worblehat.acceptancetests.adapter.wrapper.PageElement;
 import io.cucumber.java.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -122,7 +120,8 @@ public class SeleniumAdapter {
   @After
   public void afterAnyScenario(Scenario scenario) {
     switch (scenario.getStatus()) {
-      case FAILED: takeScreenShot(scenario.getName());
+      case FAILED:
+        takeScreenShot(scenario.getName());
     }
     driver.manage().deleteAllCookies();
   }
@@ -135,12 +134,15 @@ public class SeleniumAdapter {
   public void takeScreenShot(String filename) {
     try {
       File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(scrFile, new File(
-        folderName
-          .concat(File.separator)
-          .concat(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-          .concat(" – ")
-          .concat(filename).concat(".png")));
+      FileUtils.copyFile(
+          scrFile,
+          new File(
+              folderName
+                  .concat(File.separator)
+                  .concat(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                  .concat(" – ")
+                  .concat(filename)
+                  .concat(".png")));
     } catch (IOException e) {
       LOGGER.error("Could not take screenshot!", e);
     }

@@ -142,5 +142,4 @@ public class Book implements Serializable {
   public long getId() {
     return id;
   }
-
 }

@@ -8,38 +8,32 @@ import de.codecentric.psd.worblehat.acceptancetests.step.StoryContext;
 import de.codecentric.psd.worblehat.domain.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 // @Component("Library")
 public class Library {
 
-  @Autowired
-  private BookService bookService;
+  @Autowired private BookService bookService;
 
-  @Autowired
-  private BorrowingRepository borrowingRepository;
+  @Autowired private BorrowingRepository borrowingRepository;
 
-  @Autowired
-  private BookRepository bookRepository;
+  @Autowired private BookRepository bookRepository;
 
-  @Autowired
-  private final StoryContext storyContext;
+  @Autowired private final StoryContext storyContext;
 
   public Library(StoryContext storyContext) {
     this.storyContext = storyContext;
   }
 
-/*  @Autowired
-  public Library(ApplicationContext applicationContext) {
-    this.bookService = applicationContext.getBean(BookService.class);
-  }
-*/
+  /*  @Autowired
+    public Library(ApplicationContext applicationContext) {
+      this.bookService = applicationContext.getBean(BookService.class);
+    }
+  */
   // *******************
   // *** G I V E N *****
   // *******************
@@ -79,36 +73,43 @@ public class Library {
   @Given("{string} has borrowed book(s) {string} on {date}")
   public void has_borrowed_books_on(String borrower, String isbns, LocalDate borrowDate) {
     List<Book> books = (List<Book>) storyContext.getObject("LAST_INSERTED_BOOKS");
-    Splitter.on(" ").omitEmptyStrings().splitToList(isbns).stream().forEach(isbn -> {
-      Book bookToBeBorrowed = books.stream()
-        .filter(book -> book.getIsbn().equals(isbn))
-        .findFirst().orElseThrow();
+    Splitter.on(" ").omitEmptyStrings().splitToList(isbns).stream()
+        .forEach(
+            isbn -> {
+              Book bookToBeBorrowed =
+                  books.stream()
+                      .filter(book -> book.getIsbn().equals(isbn))
+                      .findFirst()
+                      .orElseThrow();
 
-      LocalDate date = borrowDate.atStartOfDay(ZoneId.systemDefault()).toLocalDate();
+              LocalDate date = borrowDate.atStartOfDay(ZoneId.systemDefault()).toLocalDate();
 
-      Borrowing newBorrowing = new Borrowing(bookToBeBorrowed, borrower, date);
-      borrowingRepository.save(newBorrowing);
+              Borrowing newBorrowing = new Borrowing(bookToBeBorrowed, borrower, date);
+              borrowingRepository.save(newBorrowing);
 
-      bookToBeBorrowed.setBorrowing(newBorrowing);
-      bookRepository.save(bookToBeBorrowed);
-    });
+              bookToBeBorrowed.setBorrowing(newBorrowing);
+              bookRepository.save(bookToBeBorrowed);
+            });
   }
 
   private List<Book> createNewBooksByISBNS(String isbns) {
-    List<Book> books = Splitter.on(" ").omitEmptyStrings().splitToList(isbns).stream().map(isbn -> {
-      Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
-      Book newBook =
-        bookService
-          .createBook(
-              book.getTitle(),
-              book.getAuthor(),
-              book.getEdition(),
-              book.getIsbn(),
-              book.getYearOfPublication())
-          .orElseThrow(IllegalStateException::new);
-      return newBook;
-
-    }).collect(Collectors.toList());
+    List<Book> books =
+        Splitter.on(" ").omitEmptyStrings().splitToList(isbns).stream()
+            .map(
+                isbn -> {
+                  Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
+                  Book newBook =
+                      bookService
+                          .createBook(
+                              book.getTitle(),
+                              book.getAuthor(),
+                              book.getEdition(),
+                              book.getIsbn(),
+                              book.getYearOfPublication())
+                          .orElseThrow(IllegalStateException::new);
+                  return newBook;
+                })
+            .collect(Collectors.toList());
     return books;
   }
 
